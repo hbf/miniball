@@ -20,6 +20,24 @@ The code is well-tested and its underlying algorithm should be numerically stabl
 
 # Getting started
 
+On Linux or MacOS, the following steps will get you going:
+
+```bash
+# Get the source code
+git clone https://github.com/hbf/miniball.git
+cd miniball/cpp/test
+
+# Download the Boost library
+wget "http://downloads.sourceforge.net/project/boost/boost/1.53.0/boost_1_53_0.tar.bz2"
+tar jxf boost_1_53_0.tar.bz2
+
+# Compile a sample
+g++ -I../main -Iboost_1_53_0 example.C -o example -O3
+
+# Run it on one million points in 3D
+./example 1000000 3
+```
+
 (More documentation to come. Contact us in case you run into any problems.)
 
 # Links
