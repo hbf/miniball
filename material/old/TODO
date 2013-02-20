@@ -1,0 +1,10 @@
+Questions:
+- Do we need size in Affine_sub_span<Traits>?
+- Should Affine_sub_span<Traits>::clear() intialize to Q={p} instead of Q={}?
+- Is it a good idea to update the radius after walking by computing the
+  distance from the new center to the stopping point?  (We do this now
+  because we don't "know" the index of a ball in Q right now...)
+
+Possible optimization:
+- Implement class Point<Float> with C-arrays instead of vectors -- I guess
+  this doesn't help anything at all.

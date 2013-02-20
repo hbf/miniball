@@ -1,0 +1,12 @@
+# rankplot.gnp
+# 2003, by Martin Kutz <kutz@math.fu-berlin.de>
+# plot rank data from data file "rank.log into "ranks.ps"
+
+set title "Rank Statistics"
+set xlabel "iteration"
+set ylabel "rank"
+set autoscale
+# set border 3
+set terminal postscript
+set output "ranks.ps"
+plot "ranks.log" notitle with lines
