@@ -1,7 +1,7 @@
 // Synopsis: A simple class to save debugging comments to files
 //
 // Authors: Martin Kutz <kutz@math.fu-berlin.de>,
-//          Kaspar Fischer <fischerk@inf.ethz.ch>
+//          Kaspar Fischer <kf@iaeth.ch>
 
 #ifndef SEB_DEBUG_H
 #define SEB_DEBUG_H

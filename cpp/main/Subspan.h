@@ -1,7 +1,7 @@
 // Synopsis: Class representing the affine hull of a point set.
 //
 // Authors: Martin Kutz <kutz@math.fu-berlin.de>,
-//          Kaspar Fischer <fischerk@inf.ethz.ch>
+//          Kaspar Fischer <kf@iaeth.ch>
 
 #ifndef SEB_SUBSPAN_H
 #define SEB_SUBSPAN_H

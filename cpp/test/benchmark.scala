@@ -15,34 +15,23 @@ def time(n: Int, dim: Int) = {
 def avg(n: Int, dim: Int) = (1 to 10).map(_ => time(n, dim)).sum/10.0
 
 val plots = Map(
-    3 -> List(10000, 50000, 100000 ),//, 250000, 500000, 750000, 1000000, 2000000, 5000000),
-    5 -> List(10000, 50000, 100000 ),//, 250000, 500000, 750000, 1000000, 2000000),
-    10 -> List(10000, 50000 )//, 100000, 250000, 500000, 750000, 1000000)
+    3 -> List(10000, 50000, 100000, 250000, 500000, 750000, 1000000, 2000000, 5000000),
+    5 -> List(10000, 50000, 100000, 250000, 500000, 750000, 1000000, 2000000),
+    10 -> List(10000, 50000, 100000, 250000, 500000, 750000, 1000000)
   )
 
-val times = for ((d,ns) <- plots)
-  yield (d, ns.map(n => (n, avg(n,d))))
-println(times)
+val measures = (
+    for ((d,ns) <- plots)
+      yield (d, ns.map(n => (n, avg(n,d))))
+  ).toList
 
-//println(avg(1000000, 3))
-val plot = """set terminal png size 400,250
+val headers = measures.map { case (d, times) => s"'-' using 1:2 axes x1y1 with linespoints title 'd=$d'"}.mkString(", ")
+val data = measures.map { case (d, times) => times.map { case (n,t) => s" $n $t\n"}.mkString + " e\n" }.mkString
+
+val plot = """set terminal png size 500,380
 set output 'times.png'
+set xtics ("10k" 10000, "50k" 50000, "100k" 100000, "250k" 250000, "500k" 500000, "1m" 1000000, "2m" 2000000, "5m" 5000000)
 set xlabel "number of points"
 set ylabel "time (s)"
-plot """
-"""
-'-' using 1:2 axes x1y1 with lines title "asd2", '-' using 1:2 axes x1y1 with lines title "asda"
-        1 10
-        2 20
-        3 32
-        4 40
-        5 50
-        e
-        1 30
-        2 20
-        3 12
-        4 80
-        5 10
-        e
-"""
-//("gnuplot" #< new ByteArrayInputStream(plot.getBytes("UTF-8"))).!!
+plot """ + headers + "\n" + data
+("gnuplot" #< new ByteArrayInputStream(plot.getBytes("UTF-8"))).!!

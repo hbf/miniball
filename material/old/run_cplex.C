@@ -4,7 +4,7 @@
 // Usage: run_cplex mps-file
 //
 // Authors: Martin Kutz <kutz@math.fu-berlin.de>,
-//          Kaspar Fischer <fischerk@inf.ethz.ch>
+//          Kaspar Fischer <kf@iaeth.ch>
 //
 // Revision: $Revision: 1094 $ ($Date: 2004-09-02 12:42:47 +0200 (Thu, 02 Sep 2004) $)
 

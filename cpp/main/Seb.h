@@ -1,7 +1,7 @@
 // Synopsis: Library to find the smallest enclosing ball of points
 //
 // Authors: Martin Kutz <kutz@math.fu-berlin.de>,
-//          Kaspar Fischer <fischerk@inf.ethz.ch>
+//          Kaspar Fischer <kf@iaeth.ch>
 
 #ifndef SEB_SEB_H
 #define SEB_SEB_H

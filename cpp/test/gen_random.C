@@ -1,7 +1,7 @@
 // Synopsis: Generates random points and writes them to stdout.
 //
 // Authors: Martin Kutz <kutz@math.fu-berlin.de>,
-//          Kaspar Fischer <fischerk@inf.ethz.ch>
+//          Kaspar Fischer <kf@iaeth.ch>
 
 #include <iostream>
 #include <iomanip>

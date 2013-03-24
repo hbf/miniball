@@ -1,12 +1,13 @@
 // Synopsis: Example program illustrating how to use the Seb library
 //
 // Authors: Martin Kutz <kutz@math.fu-berlin.de>,
-//          Kaspar Fischer <fischerk@inf.ethz.ch>
+//          Kaspar Fischer <kf@iaeth.ch>
 
 #include <iostream>
 #include <cstdio>
 
 #include <Seb.h>
+#include <Seb_Debug.C> // ... only because we use Seb::Timer below
 
 int main(int argn,char **argv) {
   typedef double FT;

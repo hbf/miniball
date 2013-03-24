@@ -1,7 +1,7 @@
 // Synopsis: Reads points from a file and computes their miniball.
 //
 // Authors: Martin Kutz <kutz@math.fu-berlin.de>,
-//          Kaspar Fischer <fischerk@inf.ethz.ch>
+//          Kaspar Fischer <kf@iaeth.ch>
 
 #include <iostream>
 #include <iomanip>

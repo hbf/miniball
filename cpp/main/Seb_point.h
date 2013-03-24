@@ -1,7 +1,7 @@
 // Synopsis: Simple point class
 //
 // Authors: Martin Kutz <kutz@math.fu-berlin.de>,
-//          Kaspar Fischer <fischerk@inf.ethz.ch>
+//          Kaspar Fischer <kf@iaeth.ch>
 
 #ifndef SEB_POINT_H
 #define SEB_POINT_H
