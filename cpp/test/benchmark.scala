@@ -33,7 +33,7 @@ val data = measures.map { case (d, times) => times.map { case (n,t) => s" $n $t\
 
 val plot = """set terminal png size 500,380
 set output 'times.png'
-set xtics ("10k" 10000, "100k" 100000, "250k" 250000, "500k" 500000, "1m" 1000000, "2m" 2000000, "5m" 5000000)
+set xtics ("100k" 100000, "250k" 250000, "500k" 500000, "1m" 1000000, "2m" 2000000, "5m" 5000000)
 set xlabel "number of points"
 set ylabel "time (s)"
 plot """ + headers + "\n" + data
