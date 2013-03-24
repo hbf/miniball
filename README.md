@@ -44,6 +44,9 @@ g++ -I../main -Iboost_1_53_0 example.C -o example -O3
 
 (More documentation to come. Contact us in case you run into any problems.)
 
+# License
+The code is available under the [Apache 2 License](http://www.apache.org/licenses/LICENSE-2.0.html), which is explained [here](http://www.tldrlegal.com/license/apache-license-2.0-(apache-2.0).
+
 # Links
   * For small dimensions like 2D or 3D, [Bernd Gärtner's code](http://www.inf.ethz.ch/personal/gaertner/miniball.html), which is based on Welzl's algorithm, may be faster.
   * The [Computational Geometry Algorithms Library (CGAL)](http://www.cgal.org/) contains both floating-point and _arbitrary-precision arithmetic_ implementations of several bounding sphere algorithms. Among then, there is an algorithm to compute the minsphere of _spheres_ (not just points as input). See the [Chapter on Bounding Volumes](http://www.cgal.org/Manual/latest/doc_html/cgal_manual/Bounding_volumes/Chapter_main.html).
