@@ -12,7 +12,11 @@ This project is dedicated to Martin Kutz.
 Currently, only the original C++ implementation that accompanied the paper is available. If you need to have a version in Java, please vote on the [respective ticket](https://github.com/hbf/miniball/issues/1). Contributions are welcome, please open a ticket or contact us directly!
 
 # Speed
-(Graphs to come. Be patient, hm.)
+On a 2.66 GHz Intel Core i7 MacBook Pro, the code performs as follows:
+
+![](http://hbf.github.com/miniball/times.png)
+
+The chart shows the time in seconds (y-axis) needed for the computation of the miniball of *n* random points (x-axis) in dimensions *d* (3, 5, or 10 in this chart).
 
 # Stability
 
