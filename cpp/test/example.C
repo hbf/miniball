@@ -52,6 +52,7 @@ int main(int argn,char **argv) {
   }
   cout << "Starting computation..." << endl
        << "====================================================" << endl;
+  Seb::Timer::instance().start("all");
 
   // compute the miniball:
   Miniball mb(d);
@@ -60,7 +61,8 @@ int main(int argn,char **argv) {
 
   // output:
   FT rad = mb.squared_radius();
-  cout << "Radius = " << std::sqrt(rad) << endl
+  cout << "Running time: " << Seb::Timer::instance().lapse("all") << "s" << endl
+       << "Radius = " << std::sqrt(rad) << endl
        << "=====================================================" << endl;
 
   mb.verify();
