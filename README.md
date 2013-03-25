@@ -3,7 +3,7 @@
 # Miniball
 A C++ library to compute the [miniball](http://en.wikipedia.org/wiki/Bounding_sphere) (a.k.a. _min-circle_, _min-sphere_, _smallest enclosing sphere_, etc.) of a point set.
 
-The code works for points in arbitrary dimension. It runs very fast in low dimensions and is practically efficient up to dimensions 10,000. The implementation is based on the algorithm from the paper _["Fast Smallest-Enclosing-Ball Computation in High Dimensions"](http://hbf.github.com/miniball/)_ by Kaspar Fischer, Bernd Gärtner, and Martin Kutz _(Proc. 11th European Symposium on Algorithms (ESA)_, p. 630-641, 2003).
+The code works for points in arbitrary dimension. It runs very fast in low dimensions and is practically efficient up to dimensions 10,000. The implementation is based on the algorithm from the paper _["Fast Smallest-Enclosing-Ball Computation in High Dimensions"](http://hbf.github.com/miniball/seb.pdf)_ by Kaspar Fischer, Bernd Gärtner, and Martin Kutz _([Proc. 11th European Symposium on Algorithms (ESA)](http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.90.5783)_, p. 630-641, 2003).
 
 This project is dedicated to Martin Kutz.
 
