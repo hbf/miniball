@@ -72,6 +72,18 @@ namespace SEB_NAMESPACE {
       return radius_square;
     }
 
+    Float radius()
+    // Returns the radius of the miniball.
+    // This is equivalent to std:sqrt(squared_radius())
+    // Precondition: !is_empty()
+    {
+      if (!up_to_date)
+  update();
+
+      SEB_ASSERT(!is_empty());
+      return radius_;
+    }
+
     Coordinate_iterator center_begin()
     // Returns an iterator to the first Cartesian coordinate of the
     // center of the miniball.
@@ -133,7 +145,7 @@ namespace SEB_NAMESPACE {
     bool up_to_date;                  // whether the miniball has
 				      // already been computed
     Float *center;                    // center of the miniball
-    Float radius, radius_square;      // squared radius of the miniball
+    Float radius_, radius_square;     // squared radius of the miniball
     Subspan<Float> *support;          // the points that lie on the current
                                       // boundary and "support" the ball;
                                       // the essential structure for update()

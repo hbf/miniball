@@ -61,9 +61,10 @@ int main(int argn,char **argv) {
     mb.insert(S[i].begin());
 
   // output:
-  FT rad = mb.squared_radius();
+  FT rad = mb.radius();
+  FT rad_squared = mb.squared_radius();
   cout << "Running time: " << Seb::Timer::instance().lapse("all") << "s" << endl
-       << "Radius = " << std::sqrt(rad) << endl
+       << "Radius = " << rad << " (squared: " << rad_squared << ")" << endl
        << "=====================================================" << endl;
 
   mb.verify();

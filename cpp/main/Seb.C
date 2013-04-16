@@ -61,7 +61,7 @@ namespace SEB_NAMESPACE {
 	radius_square = dist;
 	farthest = j;
       }
-      radius = sqrt(radius_square);
+      radius_ = sqrt(radius_square);
     }
 
     // initialize support to the farthest point:
@@ -137,7 +137,7 @@ namespace SEB_NAMESPACE {
 	// enclosed anyway:
 	if (dist_to_aff_square - dir_point_prod
 // make new variable 'radius_times_dist_to_aff'? !
-	    < Eps * radius * dist_to_aff)
+	    < Eps * radius_ * dist_to_aff)
 	  continue;
 
 	// compute the fraction we can walk along center_to_aff until
@@ -186,7 +186,7 @@ namespace SEB_NAMESPACE {
 
     init_ball();
 
-    // Invariant:  The ball B(center,radius) always contains the whole
+    // Invariant:  The ball B(center,radius_) always contains the whole
     // point set S and has the points in support on its boundary.
 
     while (true) {
@@ -202,7 +202,7 @@ namespace SEB_NAMESPACE {
 	      = sqrt(dist_to_aff_square
 		     = support->shortest_vector_to_span(center,
 							center_to_aff)))
-	     <= Eps * radius)
+	     <= Eps * radius_)
 	// We are closer than Eps * radius_square, so we try a drop:
 	if (!successful_drop()) {
 	  // If that is not possible, the center lies in the convex hull
@@ -232,10 +232,10 @@ namespace SEB_NAMESPACE {
 	radius_square = 0;
 	for (int i = 0; i < dim; ++i)
 	  radius_square += sqr(stop_point[i] - center[i]);
-	radius = sqrt(radius_square);
+	radius_ = sqrt(radius_square);
 	SEB_LOG ("debug","  current radius = "
 		         << std::setiosflags(std::ios::scientific)
-		         << std::setprecision(17) << radius
+		         << std::setprecision(17) << radius_
 		         << std::endl << std::endl);
 
 	// and add stopper to support
@@ -254,10 +254,10 @@ namespace SEB_NAMESPACE {
 	radius_square = 0;
 	for (int i = 0; i < dim; ++i)
 	  radius_square += sqr(stop_point[i] - center[i]);
-	radius = sqrt(radius_square);
+	radius_ = sqrt(radius_square);
 	SEB_LOG ("debug","  current radius = "
 		         << std::setiosflags(std::ios::scientific)
-		         << std::setprecision(17) << radius
+		         << std::setprecision(17) << radius_
 		         << std::endl << std::endl);
 
 	// Theoretically, the distance to the affine hull is now zero
@@ -302,7 +302,7 @@ namespace SEB_NAMESPACE {
 	center_to_point[i] = S[k][i] - center[i];
       ball_error = sqrt(inner_product(center_to_point,center_to_point+dim,
 				      center_to_point,Float(0)))
-	- radius;
+	- radius_;
 
       // check for sphere violations
       if (ball_error > max_overlength) max_overlength = ball_error;
@@ -319,9 +319,9 @@ namespace SEB_NAMESPACE {
     else cout << (-min_lambda);
     cout << endl
 	 << "  maximal overlength         : "
-	 << (max_overlength / radius) << endl
+	 << (max_overlength / radius_) << endl
 	 << "  maximal underlength        : "
-	 << (abs(min_underlength / radius))
+	 << (abs(min_underlength / radius_))
 	 << endl;
 
 
