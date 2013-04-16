@@ -7,7 +7,7 @@
 #include <sys/time.h>
 #include <sys/resource.h>
 
-#include <Seb_configure.h>
+#include "Seb_configure.h"
 
 namespace SEB_NAMESPACE {
 

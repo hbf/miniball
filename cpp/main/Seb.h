@@ -7,8 +7,8 @@
 #define SEB_SEB_H
 
 #include <vector>
-#include <Seb_configure.h>
-#include <Subspan.h>
+#include "Seb_configure.h"
+#include "Subspan.h"
 
 namespace SEB_NAMESPACE {
 

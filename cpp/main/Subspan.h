@@ -6,7 +6,7 @@
 #ifndef SEB_SUBSPAN_H
 #define SEB_SUBSPAN_H
 
-#include <Seb_point.h>
+#include "Seb_point.h"
 
 namespace SEB_NAMESPACE {
 
@@ -176,6 +176,6 @@ namespace SEB_NAMESPACE {
 
 } // namespace SEB_NAMESPACE
 
-#include <Subspan.C>
+#include "Subspan.C"
 
 #endif // SEB_SUBSPAN_H

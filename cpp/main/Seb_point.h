@@ -7,7 +7,7 @@
 #define SEB_POINT_H
 
 #include <vector>
-#include <Seb_configure.h>
+#include "Seb_configure.h"
 
 namespace SEB_NAMESPACE {
 
@@ -40,14 +40,14 @@ namespace SEB_NAMESPACE {
     const Float& operator[](unsigned int i) const
     // Returns a const-reference to the i-th coordinate.
     {
-      SEB_ASSERT(i < c.size());
+      SEB_ASSERT(0 <= i && i < c.size());
       return c[i];
     }
 
     Float& operator[](unsigned int i)
     // Returns a reference to the i-th coordinate.
     {
-      SEB_ASSERT(i < c.size());
+      SEB_ASSERT(0 <= i && i < c.size());
       return c[i];
     }
 
