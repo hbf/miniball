@@ -11,6 +11,12 @@
 namespace SEB_NAMESPACE {
 
   template<typename Float>
+  inline Float sqr(const Float x)
+  {
+    return x * x;
+  }
+
+  template<typename Float>
   class Subspan
   // An instance of this class represents the affine hull of a
   // non-empty set M of affinely independent points.  The set M is not

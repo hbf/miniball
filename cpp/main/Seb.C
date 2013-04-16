@@ -12,12 +12,6 @@
 namespace SEB_NAMESPACE {
 
   template<typename Float>
-  inline Float sqr(const Float x)
-  {
-    return x * x;
-  }
-
-  template<typename Float>
   void Smallest_enclosing_ball<Float>::allocate_resources()
   {
     center            = new Float[dim];
@@ -55,8 +49,8 @@ namespace SEB_NAMESPACE {
 
     // find farthest point:
     radius_square = 0;
-    int farthest;
-    for (int j = 1; j < S.size(); ++j) {
+    int farthest = 0; // Note: assignment prevents compiler warnings.
+    for (unsigned int j = 1; j < S.size(); ++j) {
       // compute squared distance from center to S[j]:
       Float dist = 0;
       for (int i = 0; i < dim; ++i)
@@ -93,7 +87,7 @@ namespace SEB_NAMESPACE {
     support->find_affine_coefficients(center,lambdas);
 
     // find a non-positive coefficient:
-    int smallest;
+    int smallest = 0; // Note: assignment prevents compiler warnings.
     Float minimum(1);
     for (int i=0; i<support->size(); ++i)
       if (lambdas[i] < minimum) {
@@ -128,7 +122,7 @@ namespace SEB_NAMESPACE {
     SEB_DEBUG (Float margin = 0;)
 
     // ... but one of the points in S might hinder us:
-    for (int j = 0; j < S.size(); ++j)
+    for (unsigned int j = 0; j < S.size(); ++j)
       if (!support->is_member(j)) {
 
 	// compute vector center_to_point from center to the point S[i]:
@@ -301,7 +295,7 @@ namespace SEB_NAMESPACE {
 	min_lambda = lambdas[k];
 
     // all points in ball, all support points really on boundary?
-    for (int k = 0; k < S.size(); ++k) {
+    for (unsigned int k = 0; k < S.size(); ++k) {
 
       // compare center-to-point distance with radius
       for (int i = 0; i < dim; ++i)
@@ -338,7 +332,7 @@ namespace SEB_NAMESPACE {
 
     // determine how often a single point entered support at most
     int max_enter = 0;
-    for (int i = 0; i < S.size(); ++i)
+    for (unsigned int i = 0; i < S.size(); ++i)
       if (entry_count[i] > max_enter)
 	max_enter = entry_count[i];
     ++max_enter;
@@ -347,7 +341,7 @@ namespace SEB_NAMESPACE {
     std::vector<int> histogram(max_enter+1);
     for (int j = 0; j <= max_enter; ++j)
       histogram[j] = 0;
-    for (int i = 0; i < S.size(); ++i)
+    for (unsigned int i = 0; i < S.size(); ++i)
       histogram[entry_count[i]]++;
     // ... and print it
     for (int j = 0; j <= max_enter; j++)
@@ -380,7 +374,7 @@ namespace SEB_NAMESPACE {
     for (int loop = 0; loop < 5; ++loop) {
 
       // Try to fill each point of S into aff
-      for (int i = 0; i < S.size(); ++i) {
+      for (unsigned int i = 0; i < S.size(); ++i) {
 
 	cout << endl << "Trying new point #" << i << endl;
 

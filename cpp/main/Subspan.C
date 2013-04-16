@@ -48,7 +48,7 @@ namespace SEB_NAMESPACE {
 
   template<typename Float>
   Subspan<Float>::Subspan(int dim,const std::vector<Pt>& S,int index)
-    : S(S), dim(dim), membership(S.size()), members(dim+1)
+    : S(S), membership(S.size()), dim(dim), members(dim+1)
   {
     // allocate storage for Q, R, u, and w:
     Q = new Float *[dim];
