@@ -89,7 +89,7 @@ namespace SEB_NAMESPACE {
     // find a non-positive coefficient:
     int smallest = 0; // Note: assignment prevents compiler warnings.
     Float minimum(1);
-    for (int i=0; i<support->size(); ++i)
+    for (unsigned int i=0; i<support->size(); ++i)
       if (lambdas[i] < minimum) {
 	minimum = lambdas[i];
 	smallest = i;
@@ -290,7 +290,7 @@ namespace SEB_NAMESPACE {
 
     // center really in convex hull?
     support->find_affine_coefficients(center,lambdas);
-    for (int k = 0; k < support->size(); ++k)
+    for (unsigned int k = 0; k < support->size(); ++k)
       if (lambdas[k] <= min_lambda)
 	min_lambda = lambdas[k];
 
@@ -332,7 +332,7 @@ namespace SEB_NAMESPACE {
 
     // determine how often a single point entered support at most
     int max_enter = 0;
-    for (unsigned int i = 0; i < S.size(); ++i)
+    for (int i = 0; i < S.size(); ++i)
       if (entry_count[i] > max_enter)
 	max_enter = entry_count[i];
     ++max_enter;
@@ -341,7 +341,7 @@ namespace SEB_NAMESPACE {
     std::vector<int> histogram(max_enter+1);
     for (int j = 0; j <= max_enter; ++j)
       histogram[j] = 0;
-    for (unsigned int i = 0; i < S.size(); ++i)
+    for (int i = 0; i < S.size(); ++i)
       histogram[entry_count[i]]++;
     // ... and print it
     for (int j = 0; j <= max_enter; j++)
@@ -374,7 +374,7 @@ namespace SEB_NAMESPACE {
     for (int loop = 0; loop < 5; ++loop) {
 
       // Try to fill each point of S into aff
-      for (unsigned int i = 0; i < S.size(); ++i) {
+      for (int i = 0; i < S.size(); ++i) {
 
 	cout << endl << "Trying new point #" << i << endl;
 

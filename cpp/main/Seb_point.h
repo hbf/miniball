@@ -37,17 +37,17 @@ namespace SEB_NAMESPACE {
 
   public: // access:
 
-    const Float& operator[](int i) const
+    const Float& operator[](unsigned int i) const
     // Returns a const-reference to the i-th coordinate.
     {
-      SEB_ASSERT(0 <= i && i < c.size());
+      SEB_ASSERT(i < c.size());
       return c[i];
     }
 
-    Float& operator[](int i)
+    Float& operator[](unsigned int i)
     // Returns a reference to the i-th coordinate.
     {
-      SEB_ASSERT(0 <= i && i < c.size());
+      SEB_ASSERT(i < c.size());
       return c[i];
     }
 

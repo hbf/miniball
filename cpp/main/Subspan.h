@@ -78,7 +78,7 @@ namespace SEB_NAMESPACE {
 
   public: // construction and deletion:
 
-    Subspan(int dim,const std::vector<Pt>& S,int i);
+    Subspan(unsigned int dim, const std::vector<Pt>& S, int i);
     // Constructs an instance representing the affine hull aff(M) of M={p},
     // where p is the point S[i] from S.
     //
@@ -90,28 +90,28 @@ namespace SEB_NAMESPACE {
   public: // modification:
 
     void add_point(int global_index);
-    void remove_point(int local_index);
+    void remove_point(unsigned int local_index);
 
   public: // access:
 
-    int size() const
+    unsigned int size() const
     {
       return r+1;
     }
 
-    bool is_member(int i) const
+    bool is_member(unsigned int i) const
     {
-      SEB_ASSERT(0<=i && i<S.size());
+      SEB_ASSERT(i < S.size());
       return membership[i];
     }
 
-    int global_index(int i) const
+    unsigned int global_index(unsigned int i) const
     {
-      SEB_ASSERT(0<=i && i<size());
+      SEB_ASSERT(i < size());
       return members[i];
     }
 
-    int any_member() const {
+    unsigned int any_member() const {
       SEB_ASSERT(size()>0);
       return members[r];
     }
@@ -144,7 +144,7 @@ namespace SEB_NAMESPACE {
     // by the caller afterwards.
     // Precondition: r<dim
 
-    void hessenberg_clear(int start);
+    void hessenberg_clear(unsigned int start);
     // Given R in lower Hessenberg form with subdiagonal entries 0 to
     // pos-1 already all zero, clears the remaining subdiagonal entries
     // via Givens rotations.
@@ -156,13 +156,13 @@ namespace SEB_NAMESPACE {
   private: // member fields:
     const std::vector<Pt>& S;          // a const-reference to the set S
     std::vector<bool> membership;      // S[i] in M iff membership[i]
-    const int dim;                     // ambient dimension (not to be
+    const unsigned int dim;            // ambient dimension (not to be
 				       // confused with the rank r,
 				       // see below)
 
     // Entry i of members contains the index into S of the i-th point
     // in M.  The point members[r] is called the "origin."
-    std::vector<int> members;
+    std::vector<unsigned int> members;
 
   private: // member fields for maintainin the QR-decomposition:
     Float **Q, **R;                    // (dim x dim)-matrices Q
@@ -171,7 +171,7 @@ namespace SEB_NAMESPACE {
 				       // e.g.  Q[j][i] is the element
 				       // in row i and column j
     Float *u,*w;                       // needed for rank-1 update
-    int r;                             // the rank of R (i.e. #points - 1)
+    unsigned int r;                    // the rank of R (i.e. #points - 1)
   };
 
 } // namespace SEB_NAMESPACE
