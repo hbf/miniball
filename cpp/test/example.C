@@ -7,7 +7,7 @@
 #include <cstdio>
 
 #include <Seb.h>
-#include <Seb_Debug.C> // ... only because we use Seb::Timer below
+#include <Seb_debug.C> // ... only because we use Seb::Timer below
 
 int main(int argn,char **argv) {
   typedef double FT;
@@ -57,13 +57,14 @@ int main(int argn,char **argv) {
 
   // compute the miniball:
   Miniball mb(d);
-  for (int i=0; i<S.size(); ++i)
+  for (unsigned int i=0; i<S.size(); ++i)
     mb.insert(S[i].begin());
 
   // output:
-  FT rad = mb.squared_radius();
+  FT rad = mb.radius();
+  FT rad_squared = mb.squared_radius();
   cout << "Running time: " << Seb::Timer::instance().lapse("all") << "s" << endl
-       << "Radius = " << std::sqrt(rad) << endl
+       << "Radius = " << rad << " (squared: " << rad_squared << ")" << endl
        << "=====================================================" << endl;
 
   mb.verify();
