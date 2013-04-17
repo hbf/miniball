@@ -27,7 +27,7 @@ namespace SEB_NAMESPACE {
     
   public: // construction and destruction:
     
-    Smallest_enclosing_ball(int d)
+    Smallest_enclosing_ball(unsigned int d)
     // Constructs an instance representing the miniball of the empty
     // set S={}.  The dimension of the ambient space is fixed to d for
     // lifetime of the instance.
@@ -140,7 +140,7 @@ namespace SEB_NAMESPACE {
     Smallest_enclosing_ball& operator=(const Smallest_enclosing_ball&);
     
   private: // member fields:
-    int dim;                          // dimension of the amient space
+    unsigned int dim;                 // dimension of the amient space
     std::vector<Pt> S;                // set S of inserted points
     bool up_to_date;                  // whether the miniball has
     // already been computed
@@ -169,6 +169,6 @@ namespace SEB_NAMESPACE {
   
 } // namespace SEB_NAMESPACE
 
-#include <Seb.C>
+#include "Seb.C"
 
 #endif // SEB_SEB_H

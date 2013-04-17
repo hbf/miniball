@@ -44,16 +44,16 @@ namespace SEB_NAMESPACE {
     SEB_ASSERT(S.size() > 0);
     
     // set center to the first point in S:
-    for (int i = 0; i < dim; ++i)
+    for (unsigned int i = 0; i < dim; ++i)
       center[i] = S[0][i];
     
     // find farthest point:
     radius_square = 0;
-    int farthest = 0; // Note: assignment prevents compiler warnings.
+    unsigned int farthest = 0; // Note: assignment prevents compiler warnings.
     for (unsigned int j = 1; j < S.size(); ++j) {
       // compute squared distance from center to S[j]:
       Float dist = 0;
-      for (int i = 0; i < dim; ++i)
+      for (unsigned int i = 0; i < dim; ++i)
         dist += sqr(S[j][i] - center[i]);
       
       // enlarge radius if needed:
@@ -87,7 +87,7 @@ namespace SEB_NAMESPACE {
     support->find_affine_coefficients(center,lambdas);
     
     // find a non-positive coefficient:
-    int smallest = 0; // Note: assignment prevents compiler warnings.
+    unsigned int smallest = 0; // Note: assignment prevents compiler warnings.
     Float minimum(1);
     for (unsigned int i=0; i<support->size(); ++i)
       if (lambdas[i] < minimum) {
@@ -126,7 +126,7 @@ namespace SEB_NAMESPACE {
       if (!support->is_member(j)) {
         
         // compute vector center_to_point from center to the point S[i]:
-        for (int i = 0; i < dim; ++i)
+        for (unsigned int i = 0; i < dim; ++i)
           center_to_point[i] = S[j][i] - center[i];
         
         const Float dir_point_prod
@@ -224,13 +224,13 @@ namespace SEB_NAMESPACE {
         // stopping point exists
         
         // walk as far as we can
-        for (int i = 0; i < dim; ++i)
+        for (unsigned int i = 0; i < dim; ++i)
           center[i] += scale * center_to_aff[i];
         
         // update the radius
         const Pt& stop_point = S[support->any_member()];
         radius_square = 0;
-        for (int i = 0; i < dim; ++i)
+        for (unsigned int i = 0; i < dim; ++i)
           radius_square += sqr(stop_point[i] - center[i]);
         radius_ = sqrt(radius_square);
         SEB_LOG ("debug","  current radius = "
@@ -246,13 +246,13 @@ namespace SEB_NAMESPACE {
       else {
         //  we can run unhindered into the affine hull
         SEB_LOG ("debug","  moving into affine hull" << std::endl);
-        for (int i=0; i<dim; ++i)
+        for (unsigned int i=0; i<dim; ++i)
           center[i] += center_to_aff[i];
         
         // update the radius:
         const Pt& stop_point = S[support->any_member()];
         radius_square = 0;
-        for (int i = 0; i < dim; ++i)
+        for (unsigned int i = 0; i < dim; ++i)
           radius_square += sqr(stop_point[i] - center[i]);
         radius_ = sqrt(radius_square);
         SEB_LOG ("debug","  current radius = "
@@ -298,7 +298,7 @@ namespace SEB_NAMESPACE {
     for (unsigned int k = 0; k < S.size(); ++k) {
       
       // compare center-to-point distance with radius
-      for (int i = 0; i < dim; ++i)
+      for (unsigned int i = 0; i < dim; ++i)
         center_to_point[i] = S[k][i] - center[i];
       ball_error = sqrt(inner_product(center_to_point,center_to_point+dim,
                                       center_to_point,Float(0)))
