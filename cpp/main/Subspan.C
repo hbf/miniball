@@ -225,7 +225,7 @@ namespace SEB_NAMESPACE {
     // where s = \sum_{i\in M} \lambda_i.-- We compute the coefficient
     // (1-s) of the origin in the variable origin_lambda:
     Float origin_lambda = 1;
-    for (unsigned int j = r-1; j>=0; --j) {
+    for (int j = r-1; j>=0; --j) {
       for (unsigned int k=j+1; k<r; ++k)
         w[j] -= *(lambdas+k) * R[k][j];
       origin_lambda -= *(lambdas+j) = w[j] / R[j][j];
