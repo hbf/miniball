@@ -9,6 +9,8 @@
 #include <numeric>
 #include <cmath>
 
+#include "Subspan.h" // Note: header included for better syntax highlighting in some IDEs.
+
 // The point members[r] is called the origin; we use the following macro
 // to increase the readibilty of the code:
 #define SEB_AFFINE_ORIGIN S[members[r]]
@@ -46,8 +48,8 @@ namespace SEB_NAMESPACE {
     }
   }
   
-  template<typename Float>
-  Subspan<Float>::Subspan(unsigned int dim, const std::vector<Pt>& S, int index)
+  template<typename Float, class Pt, class PointAccessor>
+  Subspan<Float, Pt, PointAccessor>::Subspan(unsigned int dim, const PointAccessor& S, int index)
   : S(S), membership(S.size()), dim(dim), members(dim+1)
   {
     // allocate storage for Q, R, u, and w:
@@ -71,8 +73,8 @@ namespace SEB_NAMESPACE {
     SEB_LOG ("ranks",r << std::endl);
   }
   
-  template<typename Float>
-  Subspan<Float>::~Subspan()
+  template<typename Float, class Pt, class PointAccessor>
+  Subspan<Float, Pt, PointAccessor>::~Subspan()
   {
     for (unsigned int i=0; i<dim; ++i) {
       delete[] Q[i];
@@ -84,8 +86,8 @@ namespace SEB_NAMESPACE {
     delete[] w;
   }
   
-  template<typename Float>
-  void Subspan<Float>::add_point(int index) {
+  template<typename Float, class Pt, class PointAccessor>
+  void Subspan<Float, Pt, PointAccessor>::add_point(int index) {
     SEB_ASSERT(!is_member(index));
     
     // compute S[i] - origin into u:
@@ -105,8 +107,8 @@ namespace SEB_NAMESPACE {
     SEB_LOG ("ranks",r << std::endl);
   }
   
-  template<typename Float>
-  void Subspan<Float>::remove_point(const unsigned int local_index) {
+  template<typename Float, class Pt, class PointAccessor>
+  void Subspan<Float, Pt, PointAccessor>::remove_point(const unsigned int local_index) {
     SEB_ASSERT(is_member(global_index(local_index)) && size() > 1);
     
     membership[global_index(local_index)] = false;
@@ -144,10 +146,10 @@ namespace SEB_NAMESPACE {
     }
   }
   
-  template<typename Float>
+  template<typename Float, class Pt, class PointAccessor>
   template<typename RandomAccessIterator1,
   typename RandomAccessIterator2>
-  Float Subspan<Float>::
+  Float Subspan<Float, Pt, PointAccessor>::
   shortest_vector_to_span(RandomAccessIterator1 p,
                           RandomAccessIterator2 w)
   {
@@ -167,8 +169,8 @@ namespace SEB_NAMESPACE {
     return inner_product(w,w+dim,w,Float(0));
   }
   
-  template<typename Float>
-  Float Subspan<Float>::representation_error()
+  template<typename Float, class Pt, class PointAccessor>
+  Float Subspan<Float, Pt, PointAccessor>::representation_error()
   {
     using std::abs;
     
@@ -199,10 +201,10 @@ namespace SEB_NAMESPACE {
     return max;
   }
   
-  template<typename Float>
+  template<typename Float, class Pt, class PointAccessor>
   template<typename RandomAccessIterator1,
   typename RandomAccessIterator2>
-  void Subspan<Float>::
+  void Subspan<Float, Pt, PointAccessor>::
   find_affine_coefficients(RandomAccessIterator1 p,
                            RandomAccessIterator2 lambdas)
   {
@@ -234,8 +236,8 @@ namespace SEB_NAMESPACE {
     *(lambdas+r) = origin_lambda;
   }
   
-  template<typename Float>
-  void Subspan<Float>::append_column()
+  template<typename Float, class Pt, class PointAccessor>
+  void Subspan<Float, Pt, PointAccessor>::append_column()
   // Appends the new column u (which is a member of this instance) to
   // the right of "A = QR", updating Q and R.  It assumes r to still
   // be the old value, i.e., the index of the column used now for
@@ -274,8 +276,8 @@ namespace SEB_NAMESPACE {
     }
   }
   
-  template<typename Float>
-  void Subspan<Float>::hessenberg_clear (unsigned int pos)
+  template<typename Float, class Pt, class PointAccessor>
+  void Subspan<Float, Pt, PointAccessor>::hessenberg_clear (unsigned int pos)
   // Given R in lower Hessenberg form with subdiagonal entries 0 to
   // pos-1 already all zero, clears the remaining subdiagonal entries
   // via Givens rotations.
@@ -309,8 +311,8 @@ namespace SEB_NAMESPACE {
     }
   }
   
-  template<typename Float>
-  void Subspan<Float>::special_rank_1_update ()
+  template<typename Float, class Pt, class PointAccessor>
+  void Subspan<Float, Pt, PointAccessor>::special_rank_1_update ()
   // Update current QR-decomposition "A = QR" to
   // A + u * [1,...,1] = Q' R'.
   {

@@ -8,25 +8,32 @@
 
 #include <vector>
 #include "Seb_configure.h"
+#include "Seb_point.h"
 #include "Subspan.h"
 
 namespace SEB_NAMESPACE {
+
+  // template arguments:
+  // Float must be a floating point data type for which * / - + are defined
+  // Pt[i] must return the i-th coordinate as a Float
+  // PointAccessor[j] must return the j-th point in the data set as Pt and
+  // have
+  //   - size_t size(): return the size of the data set
+  //   - void push_back(Pt): do nothing if the insert() method is not
+  //     used or add Pt to the data set // TODO: remove insert() and document how to update
   
-  template<typename Float>
+  template<typename Float, class Pt = Point<Float>, class PointAccessor = std::vector<Pt> >
   class Smallest_enclosing_ball
   // An instance of class Smallest_enclosing_ball<Float> represents
   // the smallest enclosing ball of a set S of points.  Initially, the
   // set S is empty; you can add points by calling insert().
   {
-  private: // internal representation of points:
-    typedef Point<Float> Pt;
-    
   public: // iterator-type to iterate over the center coordinates of
 	  // the miniball (cf. center_begin() below):
     typedef Float *Coordinate_iterator;
     
   public: // construction and destruction:
-    
+
     Smallest_enclosing_ball(unsigned int d)
     // Constructs an instance representing the miniball of the empty
     // set S={}.  The dimension of the ambient space is fixed to d for
@@ -34,6 +41,17 @@ namespace SEB_NAMESPACE {
     : dim(d), up_to_date(true), support(NULL)
     {
       allocate_resources();
+    }
+
+    Smallest_enclosing_ball(unsigned int d, PointAccessor P)
+    // Constructs an instance representing the miniball of points from
+    // set S.  The dimension of the ambient space is fixed to d for
+    // lifetime of the instance.
+    : dim(d), S(P), up_to_date(true), support(NULL)
+    {
+      allocate_resources();
+      SEB_ASSERT(!is_empty());
+      update();
     }
     
     ~Smallest_enclosing_ball()
@@ -43,12 +61,10 @@ namespace SEB_NAMESPACE {
     
   public: // modification:
     
-    template<typename InputIterator>
-    void insert(InputIterator first)
-    // Inserts the point p into the instance's set S.  The point p is
-    // specified by its d coordinates from the range [first,first+d).
+    void insert(const Pt &point)
+    // Inserts the point p into the instance's set S.
     {
-      S.push_back(Pt(dim,first));    //  TODO!  open design decision
+      S.push_back(point);
       up_to_date = false;
     }
     
@@ -141,12 +157,12 @@ namespace SEB_NAMESPACE {
     
   private: // member fields:
     unsigned int dim;                 // dimension of the amient space
-    std::vector<Pt> S;                // set S of inserted points
+    PointAccessor S;                  // set S of inserted points
     bool up_to_date;                  // whether the miniball has
-    // already been computed
+                                      // already been computed
     Float *center;                    // center of the miniball
     Float radius_, radius_square;     // squared radius of the miniball
-    Subspan<Float> *support;          // the points that lie on the current
+    Subspan<Float, Pt, PointAccessor> *support;          // the points that lie on the current
     // boundary and "support" the ball;
     // the essential structure for update()
     
