@@ -17,10 +17,7 @@ namespace SEB_NAMESPACE {
   // Float must be a floating point data type for which * / - + are defined
   // Pt[i] must return the i-th coordinate as a Float
   // PointAccessor[j] must return the j-th point in the data set as Pt and
-  // have
-  //   - size_t size(): return the size of the data set
-  //   - void push_back(Pt): do nothing if the insert() method is not
-  //     used or add Pt to the data set // TODO: remove insert() and document how to update
+  // size_t size() returns the size of the data set
   
   template<typename Float, class Pt = Point<Float>, class PointAccessor = std::vector<Pt> >
   class Smallest_enclosing_ball
@@ -34,16 +31,7 @@ namespace SEB_NAMESPACE {
     
   public: // construction and destruction:
 
-    Smallest_enclosing_ball(unsigned int d)
-    // Constructs an instance representing the miniball of the empty
-    // set S={}.  The dimension of the ambient space is fixed to d for
-    // lifetime of the instance.
-    : dim(d), up_to_date(true), support(NULL)
-    {
-      allocate_resources();
-    }
-
-    Smallest_enclosing_ball(unsigned int d, PointAccessor P)
+    Smallest_enclosing_ball(unsigned int d, PointAccessor &P)
     // Constructs an instance representing the miniball of points from
     // set S.  The dimension of the ambient space is fixed to d for
     // lifetime of the instance.
@@ -61,10 +49,12 @@ namespace SEB_NAMESPACE {
     
   public: // modification:
     
-    void insert(const Pt &point)
-    // Inserts the point p into the instance's set S.
+    void invalidate()
+    // Notifies the instance that the underlying point set S (passed to the constructor
+    // of this instance as parameter P) has changed. This will cause the miniball to
+    // be recomputed lazily (i.e., when you call for example radius(), the recalculation
+    // will be triggered).
     {
-      S.push_back(point);
       up_to_date = false;
     }
     
@@ -157,7 +147,7 @@ namespace SEB_NAMESPACE {
     
   private: // member fields:
     unsigned int dim;                 // dimension of the amient space
-    PointAccessor S;                  // set S of inserted points
+    PointAccessor &S;                 // set S of inserted points
     bool up_to_date;                  // whether the miniball has
                                       // already been computed
     Float *center;                    // center of the miniball

@@ -6,8 +6,8 @@
 #include <iostream>
 #include <cstdio>
 
-#include <Seb.h>
-#include <Seb_debug.C> // ... only because we use Seb::Timer below
+#include "Seb.h"
+#include "Seb_debug.C" // ... only because we use Seb::Timer below
 
 int main(int argn,char **argv) {
   typedef double FT;
@@ -57,12 +57,7 @@ int main(int argn,char **argv) {
   Seb::Timer::instance().start("all");
 
   // compute the miniball by inserting each value
-  Miniball mb(d);
-  for (unsigned int i=0; i<S.size(); ++i)
-    mb.insert(S[i]);
-
-  // also works: compute the miniball with a pre-constructed dataset
-  // Miniball mb(d, S);
+  Miniball mb(d, S);
 
   // output:
   FT rad = mb.radius();
