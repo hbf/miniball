@@ -6,12 +6,13 @@
 #include <iostream>
 #include <cstdio>
 
-#include <Seb.h>
-#include <Seb_debug.C> // ... only because we use Seb::Timer below
+#include "Seb.h"
+#include "Seb_debug.C" // ... only because we use Seb::Timer below
 
 int main(int argn,char **argv) {
   typedef double FT;
   typedef Seb::Point<FT> Point;
+  typedef std::vector<Point> PointVector;
   typedef Seb::Smallest_enclosing_ball<FT> Miniball;
 
   using std::cout;
@@ -31,7 +32,7 @@ int main(int argn,char **argv) {
   const int n = std::atoi(argv[1]), d = std::atoi(argv[2]);
 
   // construct n random points in dimension d:
-  vector<Point> S;
+  PointVector S;
   vector<double> coords(d);
   srand(clock());
   for (int i=0; i<n; ++i) {
@@ -55,10 +56,8 @@ int main(int argn,char **argv) {
        << "====================================================" << endl;
   Seb::Timer::instance().start("all");
 
-  // compute the miniball:
-  Miniball mb(d);
-  for (unsigned int i=0; i<S.size(); ++i)
-    mb.insert(S[i].begin());
+  // compute the miniball by inserting each value
+  Miniball mb(d, S);
 
   // output:
   FT rad = mb.radius();

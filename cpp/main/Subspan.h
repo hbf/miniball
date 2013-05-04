@@ -6,8 +6,6 @@
 #ifndef SEB_SUBSPAN_H
 #define SEB_SUBSPAN_H
 
-#include "Seb_point.h"
-
 namespace SEB_NAMESPACE {
   
   template<typename Float>
@@ -16,7 +14,7 @@ namespace SEB_NAMESPACE {
     return x * x;
   }
   
-  template<typename Float>
+  template<typename Float, class Pt, class PointAccessor>
   class Subspan
   // An instance of this class represents the affine hull of a
   // non-empty set M of affinely independent points.  The set M is not
@@ -73,12 +71,9 @@ namespace SEB_NAMESPACE {
   //   in other words, to the point in S with index global_index(i).
   //   Complexity: O(dim^2)
   {
-  private: // types:
-    typedef Point<Float> Pt;
-    
   public: // construction and deletion:
     
-    Subspan(unsigned int dim, const std::vector<Pt>& S, int i);
+    Subspan(unsigned int dim, const PointAccessor& S, int i);
     // Constructs an instance representing the affine hull aff(M) of M={p},
     // where p is the point S[i] from S.
     //
@@ -154,7 +149,7 @@ namespace SEB_NAMESPACE {
     // A + u [1,...,1] = Q' R'.
     
   private: // member fields:
-    const std::vector<Pt>& S;          // a const-reference to the set S
+    const PointAccessor &S;            // a const-reference to the set S
     std::vector<bool> membership;      // S[i] in M iff membership[i]
     const unsigned int dim;            // ambient dimension (not to be
     // confused with the rank r,

@@ -9,10 +9,12 @@
 #include <numeric>
 #include <algorithm>
 
+#include "Seb.h" // Note: header included for better syntax highlighting in some IDEs.
+
 namespace SEB_NAMESPACE {
   
-  template<typename Float>
-  void Smallest_enclosing_ball<Float>::allocate_resources()
+  template<typename Float, class Pt, class PointAccessor>
+  void Smallest_enclosing_ball<Float, Pt, PointAccessor>::allocate_resources()
   {
     center            = new Float[dim];
     center_to_aff     = new Float[dim];
@@ -20,8 +22,8 @@ namespace SEB_NAMESPACE {
     lambdas           = new Float[dim+1];
   }
   
-  template<typename Float>
-  void Smallest_enclosing_ball<Float>::deallocate_resources()
+  template<typename Float, class Pt, class PointAccessor>
+  void Smallest_enclosing_ball<Float, Pt, PointAccessor>::deallocate_resources()
   {
     delete[] center;
     delete[] center_to_aff;
@@ -32,8 +34,8 @@ namespace SEB_NAMESPACE {
       delete support;
   }
   
-  template<typename Float>
-  void Smallest_enclosing_ball<Float>::init_ball()
+  template<typename Float, class Pt, class PointAccessor>
+  void Smallest_enclosing_ball<Float, Pt, PointAccessor>::init_ball()
   // Precondition: |S| > 0
   // Sets up the search ball with an arbitrary point of S as center
   // and with with exactly one of the points farthest from center in
@@ -67,15 +69,15 @@ namespace SEB_NAMESPACE {
     // initialize support to the farthest point:
     if (support != NULL)
       delete support;
-    support = new Subspan<Float>(dim,S,farthest);
+    support = new Subspan<Float, Pt, PointAccessor>(dim,S,farthest);
     
     // statistics:
     // initialize entry-counters to zero:
     SEB_STATS(entry_count = std::vector<int>(S.size(),0));
   }
   
-  template<typename Float>
-  bool Smallest_enclosing_ball<Float>::successful_drop()
+  template<typename Float, class Pt, class PointAccessor>
+  bool Smallest_enclosing_ball<Float, Pt, PointAccessor>::successful_drop()
   // Precondition: center lies in aff(support).
   // If center doesn't already lie in conv(support) and is thus
   // not optimal yet, successful_drop() elects a suitable point k to
@@ -104,8 +106,8 @@ namespace SEB_NAMESPACE {
     return false;
   }
   
-  template<typename Float>
-  Float Smallest_enclosing_ball<Float>::find_stop_fraction(int& stopper)
+  template<typename Float, class Pt, class PointAccessor>
+  Float Smallest_enclosing_ball<Float, Pt, PointAccessor>::find_stop_fraction(int& stopper)
   // Given the center of the current enclosing ball and the
   // walking direction center_to_aff, determine how much we can walk
   // into this direction without losing a point from S.  The (positive)
@@ -163,8 +165,8 @@ namespace SEB_NAMESPACE {
   }
   
   
-  template<typename Float>
-  void Smallest_enclosing_ball<Float>::update()
+  template<typename Float, class Pt, class PointAccessor>
+  void Smallest_enclosing_ball<Float, Pt, PointAccessor>::update()
   // The main function containing the main loop.
   // Iteratively, we compute the point in support that is closest
   // to the current center and then walk towards this target as far
@@ -274,8 +276,8 @@ namespace SEB_NAMESPACE {
     }
   }
   
-  template<typename Float>
-  void Smallest_enclosing_ball<Float>::verify()
+  template<typename Float, class Pt, class PointAccessor>
+  void Smallest_enclosing_ball<Float, Pt, PointAccessor>::verify()
   {
     using std::inner_product;
     using std::abs;
@@ -351,8 +353,8 @@ namespace SEB_NAMESPACE {
   }
   
   
-  template<typename Float>
-  void Smallest_enclosing_ball<Float>::test_affine_stuff()
+  template<typename Float, class Pt, class PointAccessor>
+  void Smallest_enclosing_ball<Float, Pt, PointAccessor>::test_affine_stuff()
   {
     using std::cout;
     using std::endl;
@@ -364,7 +366,7 @@ namespace SEB_NAMESPACE {
     cout << S.size() << " points in " << dim << " dimensions" << endl;
     
     if (!is_empty()) {
-      support = new Subspan<Float>(dim,S,0);
+      support = new Subspan<Float,PointAccessor,Pt>(dim,S,0);
       cout << "initializing affine subspace with point S[0]" << endl;
       
       direction = new Float[dim];
@@ -426,8 +428,8 @@ namespace SEB_NAMESPACE {
   }
   
   
-  template<typename Float>
-  const Float Smallest_enclosing_ball<Float>::Eps = Float(1e-14);
+  template<typename Float, class Pt, class PointAccessor>
+  const Float Smallest_enclosing_ball<Float, Pt, PointAccessor>::Eps = Float(1e-14);
   
 } // namespace SEB_NAMESPACE
 
