@@ -5,7 +5,7 @@ package com.dreizak.miniball.highdim;
  */
 class Logging
 {
-  final static boolean log = true;
+  final static boolean log = false;
 
   public final static void warn(String msg)
   {

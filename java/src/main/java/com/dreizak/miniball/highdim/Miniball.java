@@ -39,8 +39,7 @@ public class Miniball
   private int iteration;
   private final double[] center, centerToAff, centerToPoint, lambdas;
   private double distToAff, distToAffSquare;
-  private double squaredRadius;
-  private double radius;
+  private double squaredRadius, radius;
   private final Subspan support;
   private int stopper;
 
@@ -64,6 +63,7 @@ public class Miniball
     centerToPoint = new double[dim];
     lambdas = new double[dim + 1];
     support = initBall();
+    compute();
   }
 
   /**
@@ -118,6 +118,18 @@ public class Miniball
   }
 
   /**
+   * The number of input points.
+   * 
+   * @return the number of points in the original point set, i.e., {@code pts.size()} where
+   *         {@code pts} was the {@link PointSet} instance passed to the constructor of this
+   *         instance
+   */
+  public int size()
+  {
+    return size;
+  }
+
+  /**
    * TODO
    * 
    * @return
@@ -163,8 +175,8 @@ public class Miniball
         squaredRadius = dist;
         farthest = j;
       }
-      radius = Math.sqrt(squaredRadius);
     }
+    radius = Math.sqrt(squaredRadius);
 
     // Initialize support to the farthest point:
     return new Subspan(dim, S, farthest);
@@ -196,12 +208,13 @@ public class Miniball
    * case when the center lies in <i>aff(support)</i>. If such an attempt to drop fails, we are
    * done; because then the center lies even <i>conv(support)</i>.
    */
-  private void update()
+  private void compute()
   {
     // Invariant: The ball B(center,radius) always contains the whole
     // point set S and has the points in support on its boundary.
     while (true)
     {
+      ++iteration;
 
       if (log)
       {
@@ -213,6 +226,7 @@ public class Miniball
       // and check if the former is perhaps too small:
       computeDistToAff();
       while (distToAff <= Eps * radius)
+      {
         // We are closer than Eps * radius_square, so we try a drop:
         if (!successfulDrop())
         {
@@ -221,12 +235,14 @@ public class Miniball
           if (log) info("Done");
           return;
         }
-      if (log) debug("distance to affine hull = " + distToAff);
+        computeDistToAff();
+      }
+      // if (log) debug("distance to affine hull = " + distToAff);
 
       // Determine how far we can walk in direction centerToAff
       // without losing any point ('stopper', say) in S:
       final double scale = findStopFraction();
-      if (log) debug("stop fraction = " + scale);
+      // if (log) debug("stop fraction = " + scale);
 
       // Stopping point exists
       if (stopper >= 0)
@@ -239,13 +255,13 @@ public class Miniball
 
         // and add stopper to support
         support.add(stopper);
-        if (log) debug("adding global point #" + stopper);
+        // if (log) debug("adding global point #" + stopper);
 
         // No obstacle on our way into the affine hull
       }
       else
       {
-        if (log) debug("moving into affine hull");
+        // if (log) debug("moving into affine hull");
         for (int i = 0; i < dim; ++i)
           center[i] += centerToAff[i];
 
@@ -290,7 +306,7 @@ public class Miniball
     // Drop a point with non-positive coefficient, if any
     if (minimum <= 0)
     {
-      if (log) debug("removing local point #" + smallest);
+      // if (log) debug("removing local point #" + smallest);
       support.remove(smallest);
       return true;
     }
@@ -315,7 +331,7 @@ public class Miniball
       if (!support.isMember(j))
       {
 
-        // Compute vector centerToPoint from center to the point S[i]:
+        // Compute vector centerToPoint from center to the point S[j]:
         for (int i = 0; i < dim; ++i)
           centerToPoint[i] = S.coord(j, i) - center[i];
 
@@ -323,21 +339,22 @@ public class Miniball
         for (int i = 0; i < dim; ++i)
           dirPointProd += centerToAff[i] * centerToPoint[i];
 
-        // wW can ignore points beyond support since they stay enclosed anyway
+        // We can ignore points beyond support since they stay enclosed anyway
         if (distToAffSquare - dirPointProd < Eps * radius * distToAff) continue;
 
         // Compute the fraction we can walk along centerToAff until
         // we hit point S[i] on the boundary.
         // (Better don't try to understand this calculus from the code,
         // it needs some pencil-and-paper work.)
-        double bound = squaredRadius;
+        double bound = 0;
         for (int i = 0; i < dim; ++i)
-          bound -= centerToPoint[i] * centerToPoint[i];
-        bound /= 2 * (distToAffSquare - dirPointProd);
+          bound += centerToPoint[i] * centerToPoint[i];
+        bound = (squaredRadius - bound) / 2 / (distToAffSquare - dirPointProd);
 
         // Take the smallest fraction
         if (bound < scale)
         {
+          if (log) debug("found stopper " + j + " bound=" + bound + " scale=" + scale);
           scale = bound;
           stopper = j;
         }
