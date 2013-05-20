@@ -1,0 +1,35 @@
+Deployment instructions
+=======================
+
+The Java project has been setup following the instructions from 
+
+  http://stackoverflow.com/questions/14013644/hosting-a-maven-repository-on-github/14013645#14013645
+
+In order to use it, ensure that your ~/.m2/settings.xml contains your Github login credentials:
+
+  <server>
+    <id>github</id>
+    <username>hbf</username>
+    <password>PASSWORD</password>
+  </server>
+
+Then use
+
+  mvn clean deploy
+
+to create the Maven site, store it in the gh-pages branch of the Github project (accessible at http://hbf.github.com/miniball) and store the JAR file in
+
+  https://raw.github.com/hbf/miniball/mvn-repo/
+
+After this, any Maven project that uses the repository
+
+    <repository>
+        <id>miniball</id>
+        <url>https://raw.github.com/hbf/miniball/mvn-repo/</url>
+        <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>always</updatePolicy>
+        </snapshots>
+    </repository>
+
+will be able to download the JAR.
