@@ -1,41 +1,34 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-
 	<groupId>com.dreizak.miniball</groupId>
 	<artifactId>miniball</artifactId>
 	<version>1.0</version>
 	<name>Miniball</name>
 	<description>Smallest enclosing ball of a point set</description>
 	<url>https://github.com/hbf/miniball</url>
-
 	<issueManagement>
 		<url>https://github.com/hbf/miniball/issues</url>
 		<system>GitHub Issues</system>
 	</issueManagement>
-
-<licenses>
-  <license>
-    <name>The Apache Software License, Version 2.0</name>
-    <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-    <distribution>repo</distribution>
-  </license>
-</licenses>
-
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
 	<scm>
 		<url>https://github.com/hbf/miniball</url>
 		<connection>scm:git:git://github.com/hbf/miniball.git</connection>
 		<developerConnection>scm:git:git@github.com:hbf/miniball.git</developerConnection>
 	</scm>
-
-<distributionManagement>
-    <repository>
-        <id>internal.repo</id>
-        <name>Temporary Staging Repository</name>
-        <url>file://${project.build.directory}/mvn-repo</url>
-    </repository>
-</distributionManagement>
-
+	<distributionManagement>
+		<repository>
+			<id>internal.repo</id>
+			<name>Temporary Staging Repository</name>
+			<url>file://${project.build.directory}/mvn-repo</url>
+		</repository>
+	</distributionManagement>
 	<developers>
 		<developer>
 			<email>kf@iaeth.ch</email>
@@ -44,7 +37,6 @@
 			<id>hbf</id>
 		</developer>
 	</developers>
-
 	<build>
 		<plugins>
 			<plugin>
@@ -142,7 +134,6 @@
 			</plugin>
 		</plugins>
 	</build>
-
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -150,11 +141,16 @@
 			<version>4.8</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>14.0.1</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
-
-<properties>
-    <!-- github server corresponds to entry in ~/.m2/settings.xml -->
-    <github.global.server>github</github.global.server>
+	<properties>
+		<!-- github server corresponds to entry in ~/.m2/settings.xml -->
+		<github.global.server>github</github.global.server>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-</properties>
+	</properties>
 </project>
