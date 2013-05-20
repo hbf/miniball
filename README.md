@@ -11,6 +11,8 @@ This project is dedicated to Martin Kutz.
 
 Currently, only the original C++ implementation that accompanied the paper is available. If you need to have a version in Java, please vote on the [respective ticket](https://github.com/hbf/miniball/issues/1). Contributions are welcome, please open a ticket or contact us directly!
 
+**Note**: A Java implementation is underway. We are awaiting approval by Sonatype to publish it in the Sonatype OSS Maven Repository and will release afterwards, this won't take long.
+
 # Speed
 On a 2.66 GHz Intel Core i7 MacBook Pro, the code performs as follows:
 
