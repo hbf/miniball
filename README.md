@@ -9,7 +9,12 @@ This project is dedicated to Martin Kutz.
 
 # Language support
 
-Currently, only the original C++ implementation that accompanied the paper is available. If you need to have a version in Java, please vote on the [respective ticket](https://github.com/hbf/miniball/issues/1). Contributions are welcome, please open a ticket or contact us directly!
+The project provides:
+
+ * A Java implementation; and
+ * A C++ implementation.
+ 
+Contributions are welcome, please open a ticket or contact us directly!
 
 **Note**: A Java implementation is underway. We are awaiting approval by Sonatype to publish it in the Sonatype OSS Maven Repository and will release afterwards, this won't take long.
 
@@ -24,7 +29,27 @@ The chart shows the time in seconds (y-axis) needed for the computation of the m
 
 The code is well-tested and its underlying algorithm should be numerically stable. By "numerically stable" we mean that even for points in _degenerate position_ – like all on a line, all on a circle, identical points in the input, etc. – the algorithm will (i) terminate, (ii) be fast, (iii) provide an accurate result.
 
-# Getting started
+# Getting started (Java)
+
+You can either download the latest JAR file from TODO or use a build system like Maven or Graddle, or SBT (for Scala users).
+
+Maven dependency:
+
+```xml
+TODO
+```
+
+SBT dependency:
+
+    TODO
+
+Documentation:
+
+ * [Project information](http://hbf.github.com/miniball/)
+ * [JavaDoc](http://hbf.github.io/miniball/apidocs/com/dreizak/miniball/highdim/Miniball.html)
+ * [`MiniballTest.java`](https://github.com/hbf/miniball/blob/wip-java/java/src/test/java/com/dreizak/miniball/highdim/MiniballTest.java): A few tests take will help you understand how to use the library. Take a look at method `TODO` for a simple example.
+
+# Getting started (C++)
 
 On Linux or MacOS, the following steps will get you going:
 
