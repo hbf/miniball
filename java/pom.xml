@@ -6,10 +6,6 @@
 	<name>Miniball</name>
 	<description>Smallest enclosing ball of a point set</description>
 	<url>https://github.com/hbf/miniball</url>
-	<issueManagement>
-		<url>https://github.com/hbf/miniball/issues</url>
-		<system>GitHub Issues</system>
-	</issueManagement>
 	<licenses>
 		<license>
 			<name>The Apache Software License, Version 2.0</name>
@@ -18,31 +14,28 @@
 		</license>
 	</licenses>
 	<scm>
-		<url>https://github.com/hbf/miniball</url>
-		<connection>scm:git:git://github.com/hbf/miniball.git</connection>
+		<connection>scm:git:git@github.com:hbf/miniball.git</connection>
 		<developerConnection>scm:git:git@github.com:hbf/miniball.git</developerConnection>
+		<url>git@github.com:hbf/miniball.git</url>
 	</scm>
-	<distributionManagement>
-		<repository>
-			<id>internal.repo</id>
-			<name>Temporary Staging Repository</name>
-			<url>file://${project.build.directory}/mvn-repo</url>
-		</repository>
-	</distributionManagement>
 	<developers>
 		<developer>
-			<email>kf@iaeth.ch</email>
-			<name>Kaspar Fischer</name>
-			<url>https://github.com/hbf</url>
 			<id>hbf</id>
+			<name>Kaspar Fischer</name>
+			<email>kf@iaeth.ch</email>
+			<url>http://www.linkedin.com/profile/view?id=90406280</url>
 		</developer>
 	</developers>
+	<issueManagement>
+		<url>https://github.com/hbf/miniball/issues</url>
+		<system>GitHub Issues</system>
+	</issueManagement>
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>com.github.github</groupId>
 				<artifactId>site-maven-plugin</artifactId>
-				<version>0.7</version>
+				<version>0.8</version>
 				<configuration>
 					<message>Building site for ${project.version}</message>
 					<server>github</server>
@@ -93,6 +86,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
 				<configuration>
 					<source>1.6</source>
 					<target>1.6</target>
@@ -101,6 +95,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.3.2</version>
 				<configuration>
 					<archive>
 						<manifest>
@@ -113,6 +108,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.9</version>
 				<executions>
 					<execution>
 						<goals>
@@ -124,6 +120,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
+				<version>2.2.1</version>
 				<executions>
 					<execution>
 						<goals>
@@ -151,6 +148,8 @@
 	<properties>
 		<!-- github server corresponds to entry in ~/.m2/settings.xml -->
 		<github.global.server>github</github.global.server>
+		<repositoryName>miniball</repositoryName>
+		<repositoryOwner>hbf</repositoryOwner>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 </project>
