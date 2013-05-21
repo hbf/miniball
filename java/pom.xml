@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.dreizak</groupId>
 	<artifactId>miniball</artifactId>
-	<version>1.0-SNAPSHOT</version>
+	<version>1.0</version>
 	<name>Miniball</name>
 	<description>Smallest enclosing ball of a point set</description>
 	<url>https://github.com/hbf/miniball</url>
@@ -22,12 +22,13 @@
 		<connection>scm:git:git@github.com:hbf/miniball.git</connection>
 		<developerConnection>scm:git:git@github.com:hbf/miniball.git</developerConnection>
 		<url>git@github.com:hbf/miniball.git</url>
-	</scm>
+	  <tag>miniball-1.0</tag>
+  </scm>
 	<developers>
 		<developer>
 			<id>hbf</id>
 			<name>Kaspar Fischer</name>
-			<email>kf@iaeth.ch</email>
+			<email>kaspar.fischer@dreizak.com</email>
 			<url>http://www.linkedin.com/profile/view?id=90406280</url>
 		</developer>
 	</developers>
