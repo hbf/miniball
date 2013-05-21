@@ -1,44 +1,19 @@
 package com.dreizak.miniball.highdim;
 
-import static com.dreizak.miniball.model.PointSetUtils.randomPointSet;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.dreizak.miniball.Timing;
 import com.dreizak.miniball.Utils;
 import com.dreizak.miniball.model.PointSet;
 
 public class MiniballTest
 {
-  @Ignore
-  @Test
-  public void randomTest()
-  {
-    randomTest(3, 1000000, new Random(31415));
-  }
-
-  // Returns CPU time in ms
-  long randomTest(int d, int n, Random r)
-  {
-    PointSet pts = randomPointSet(d, n, r);
-    final long then = Timing.cpuTime();
-    Miniball mb = new Miniball(pts);
-    final long time = (Timing.cpuTime() - then) / 1000000;
-
-    // System.out.println(pts);
-    System.out.println(mb);
-    return time;
-  }
-
   @Test
   public void test_almost_cospherical_points_3() throws IOException
   {
@@ -390,16 +365,6 @@ public class MiniballTest
     assertEquals(10000, mb.size());
     assertAlmostEquals(expectedCenter, mb.center());
     assertAlmostEquals(1.62004498782482909e+00, mb.squaredRadius());
-  }
-
-  @Ignore
-  @Test
-  public void perfTest() // TODO: see #7, #8
-  {
-    List<Long> durations = new ArrayList<Long>();
-    for (int i = 0; i < 15; ++i)
-      durations.add(randomTest(3, 2000000, new Random(12)));
-    System.out.println("Median of running times: " + Timing.median(durations) + "ms");
   }
 
   @Ignore
