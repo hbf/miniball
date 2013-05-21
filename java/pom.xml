@@ -6,6 +6,11 @@
 	<name>Miniball</name>
 	<description>Smallest enclosing ball of a point set</description>
 	<url>https://github.com/hbf/miniball</url>
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
 	<licenses>
 		<license>
 			<name>The Apache Software License, Version 2.0</name>

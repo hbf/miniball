@@ -43,8 +43,8 @@ SBT dependency:
 
 Documentation:
 
- * [Project information](http://hbf.github.com/miniball/):
- * [JavaDoc]()
+ * [Project information](http://hbf.github.com/miniball/)
+ * [JavaDoc](http://hbf.github.io/miniball/apidocs/com/dreizak/miniball/highdim/Miniball.html)
  * [`MiniballTest.java`](https://github.com/hbf/miniball/blob/wip-java/java/src/test/java/com/dreizak/miniball/highdim/MiniballTest.java): A few tests take will help you understand how to use the library. Take a look at method `TODO` for a simple example.
 
 # Getting started (C++)
