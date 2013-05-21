@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<rss version="0.91">
+  <channel>
+    <title>Miniball - Checkstyle report</title>
+    <link>https://github.com/hbf/miniball</link>
+    <description>Miniball - Checkstyle report</description>
+    <language>en-us</language>
+    <copyright>&#169;2013</copyright>
+    <item>
+      <title>File: 7,
+             Errors: 440,
+             Warnings: 0,
+             Infos: 0
+      </title>
+            <link>https://github.com/hbf/miniball/checkstyle.html</link>
+      <description>
+        <p>Click <a href="https://github.com/hbf/miniball/checkstyle.html">here</a> for the full Checkstyle report.</p>
+
+        <table summary="Files" boder="1">
+          <thead>
+            <tr>
+              <th>Files</th>
+              <th style="width:30px;"><abbr title="Info">I</abbr></th>
+              <th style="width:30px;"><abbr title="Warning">W</abbr></th>
+              <th style="width:30px;"><abbr title="Error">E</abbr></th>
+            </tr>
+          </thead>
+          <tbody>
+                          <tr>
+                <td>
+                  <a href="https://github.com/hbf/miniball/checkstyle.html#com.dreizak.miniball.model.PointSet.java">com/dreizak/miniball/model/PointSet.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  14
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/hbf/miniball/checkstyle.html#com.dreizak.miniball.highdim.Quality.java">com/dreizak/miniball/highdim/Quality.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  54
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/hbf/miniball/checkstyle.html#com.dreizak.miniball.model.ArrayPointSet.java">com/dreizak/miniball/model/ArrayPointSet.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  31
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/hbf/miniball/checkstyle.html#com.dreizak.miniball.highdim.Logging.java">com/dreizak/miniball/highdim/Logging.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  21
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/hbf/miniball/checkstyle.html#com.dreizak.miniball.highdim.Miniball.java">com/dreizak/miniball/highdim/Miniball.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  144
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/hbf/miniball/checkstyle.html#com.dreizak.miniball.Utils.java">com/dreizak/miniball/Utils.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  23
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/hbf/miniball/checkstyle.html#com.dreizak.miniball.highdim.Subspan.java">com/dreizak/miniball/highdim/Subspan.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  153
+                </td>
+              </tr>
+                      </tbody>
+        </table>
+        
+      </description>
+    </item>
+  </channel>
+</rss>
+

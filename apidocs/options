@@ -1,0 +1,22 @@
+-classpath
+'/Users/hbf/Documents/workspace/miniball/java/target/classes'
+-encoding
+'UTF-8'
+-protected
+-sourcepath
+'/Users/hbf/Documents/workspace/miniball/java/src/main/java'
+-author
+-bottom
+'Copyright &#169; 2013. All Rights Reserved.'
+-charset
+'UTF-8'
+-d
+'/Users/hbf/Documents/workspace/miniball/java/target/site/apidocs'
+-docencoding
+'UTF-8'
+-doctitle
+'Miniball 1.0 API'
+-use
+-version
+-windowtitle
+'Miniball 1.0 API'
