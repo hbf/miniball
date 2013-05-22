@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.dreizak</groupId>
 	<artifactId>miniball</artifactId>
-	<version>1.0-SNAPSHOT</version>
+	<version>1.0</version>
 	<name>Miniball</name>
 	<description>Smallest enclosing ball of a point set</description>
 	<url>https://github.com/hbf/miniball</url>
