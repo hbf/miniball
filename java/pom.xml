@@ -22,8 +22,8 @@
 		<connection>scm:git:git@github.com:hbf/miniball.git</connection>
 		<developerConnection>scm:git:git@github.com:hbf/miniball.git</developerConnection>
 		<url>git@github.com:hbf/miniball.git</url>
-	  <tag>miniball-1.0</tag>
-  </scm>
+		<tag>miniball-1.0</tag>
+	</scm>
 	<developers>
 		<developer>
 			<id>hbf</id>
@@ -139,7 +139,17 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-release-plugin</artifactId>
 				<version>2.4.1</version>
+			</plugin>
+			<plugin>
+				<groupId>org.sonatype.plugins</groupId>
+				<artifactId>nexus-staging-maven-plugin</artifactId>
+				<version>1.1</version>
+				<extensions>true</extensions>
 				<configuration>
+					<!-- The Base URL of Nexus instance where we want to stage -->
+					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+					<!-- The server "id" element from settings to use authentication from -->
+					<serverId>sonatype-nexus-staging</serverId>
 				</configuration>
 			</plugin>
 		</plugins>
