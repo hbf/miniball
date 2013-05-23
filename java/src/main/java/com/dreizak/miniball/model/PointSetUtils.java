@@ -1,4 +1,4 @@
-package com.dreizak.miniball;
+package com.dreizak.miniball.model;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -8,13 +8,38 @@ import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.util.Scanner;
 
-import com.dreizak.miniball.model.ArrayPointSet;
-
-/**
- * Utility methods for point sets and miniballs.
- */
-public class Utils
+public class PointSetUtils
 {
+  /**
+   * A random number generator for use in {@link PointSetUtils#randomPointSet(int, int, Random)}.
+   */
+  public static interface Random
+  {
+    double nextDouble();
+  }
+
+  /**
+   * Generates a random point set given a random number generator.
+   * 
+   * @param d
+   *          dimension of the points in the point set
+   * @param n
+   *          number of points
+   * @param r
+   *          the random number generator
+   * @return a point set with {@code n} {@code d}-dimensional points
+   */
+  public static ArrayPointSet randomPointSet(int d, int n, Random r)
+  {
+    ArrayPointSet pts = new ArrayPointSet(d, n);
+
+    for (int i = 0; i < n; ++i)
+      for (int j = 0; j < d; ++j)
+        pts.set(i, j, r.nextDouble());
+
+    return pts;
+  }
+
   /**
    * Reads a point set from an input stream.
    * <p>

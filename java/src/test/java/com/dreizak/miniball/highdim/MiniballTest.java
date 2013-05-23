@@ -9,8 +9,8 @@ import java.io.InputStream;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.dreizak.miniball.Utils;
 import com.dreizak.miniball.model.PointSet;
+import com.dreizak.miniball.model.PointSetUtils;
 
 public class MiniballTest
 {
@@ -421,7 +421,7 @@ public class MiniballTest
 
   Miniball computeFromFile(InputStream s) throws IOException
   {
-    PointSet pts = Utils.pointsFromStream(s);
+    PointSet pts = PointSetUtils.pointsFromStream(s);
     Miniball mb = new Miniball(pts);
     System.out.println(mb);
     return mb;

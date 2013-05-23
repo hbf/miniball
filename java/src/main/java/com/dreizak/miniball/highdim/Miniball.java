@@ -225,9 +225,14 @@ public class Miniball
       // Compute a walking direction and walking vector,
       // and check if the former is perhaps too small:
       computeDistToAff();
-      while (distToAff <= Eps * radius)
+      while (distToAff <= Eps * radius ||
+      /*
+       * Note: the following line is currently needed because of point sets like schnartz, see
+       * MiniballTest.
+       */
+      support.size() == dim + 1)
       {
-        // We are closer than Eps * radius_square, so we try a drop:
+        // We are closer than Eps * radius_square, so we try a drop
         if (!successfulDrop())
         {
           // If that is not possible, the center lies in the convex hull
@@ -242,7 +247,6 @@ public class Miniball
       // Determine how far we can walk in direction centerToAff
       // without losing any point ('stopper', say) in S:
       final double scale = findStopFraction();
-      // if (log) debug("stop fraction = " + scale);
 
       // Stopping point exists
       if (stopper >= 0)
@@ -261,7 +265,6 @@ public class Miniball
       }
       else
       {
-        // if (log) debug("moving into affine hull");
         for (int i = 0; i < dim; ++i)
           center[i] += centerToAff[i];
 
@@ -330,7 +333,6 @@ public class Miniball
     for (int j = 0; j < size; ++j)
       if (!support.isMember(j))
       {
-
         // Compute vector centerToPoint from center to the point S[j]:
         for (int i = 0; i < dim; ++i)
           centerToPoint[i] = S.coord(j, i) - center[i];

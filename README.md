@@ -1,22 +1,11 @@
 ![](http://hbf.github.com/miniball/miniball.png)
 
 # Miniball
-A C++ library to compute the [miniball](http://en.wikipedia.org/wiki/Bounding_sphere) (a.k.a. _min-circle_, _min-sphere_, _smallest enclosing sphere_, etc.) of a point set.
+A C++ and Java library to compute the [miniball](http://en.wikipedia.org/wiki/Bounding_sphere) (a.k.a. _min-circle_, _min-sphere_, _smallest enclosing sphere_, etc.) of a point set.
 
 The code works for points in arbitrary dimension. It runs very fast in low dimensions and is practically efficient up to dimensions 10,000. The implementation is based on the algorithm from the paper _["Fast Smallest-Enclosing-Ball Computation in High Dimensions"](http://hbf.github.com/miniball/seb.pdf)_ by Kaspar Fischer, Bernd Gärtner, and Martin Kutz _([Proc. 11th European Symposium on Algorithms (ESA)](http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.90.5783)_, p. 630-641, 2003).
 
-This project is dedicated to Martin Kutz.
-
-# Language support
-
-The project provides:
-
- * A Java implementation; and
- * A C++ implementation.
- 
-Contributions are welcome, please open a ticket or contact us directly!
-
-**Note**: A Java implementation is underway. We are awaiting approval by Sonatype to publish it in the Sonatype OSS Maven Repository and will release afterwards, this won't take long.
+This project is dedicated to Martin Kutz†.
 
 # Speed
 On a 2.66 GHz Intel Core i7 MacBook Pro, the code performs as follows:
@@ -29,19 +18,25 @@ The chart shows the time in seconds (y-axis) needed for the computation of the m
 
 The code is well-tested and its underlying algorithm should be numerically stable. By "numerically stable" we mean that even for points in _degenerate position_ – like all on a line, all on a circle, identical points in the input, etc. – the algorithm will (i) terminate, (ii) be fast, (iii) provide an accurate result.
 
+Please report any problems you may find as [tickets](https://github.com/hbf/miniball/issues).
+
 # Getting started (Java)
 
 You can either download the latest JAR file from TODO or use a build system like Maven or Graddle, or SBT (for Scala users).
 
 Maven dependency:
 
-```xml
-TODO
+```
+<dependency>
+  <groupId>com.dreizak</groupId>
+  <artifactId>miniball</artifactId>
+  <version>1.0.1</version>
+</dependency>
 ```
 
 SBT dependency:
 
-    TODO
+    libraryDependencies += "com.dreizak" % "miniball" % "1.0.1"
 
 Documentation:
 
@@ -51,19 +46,15 @@ Documentation:
 
 # Getting started (C++)
 
-On Linux or MacOS, the following steps will get you going:
+On Linux or MacOS, the following steps will get you going: (Notice that the Boost library that the instructions below download is only used in this example to generate some input points; the library as such does not depend on it.)
 
 ```bash
 # Get the source code
 git clone https://github.com/hbf/miniball.git
 cd miniball/cpp/test
 
-# Download the Boost library
-wget "http://downloads.sourceforge.net/project/boost/boost/1.53.0/boost_1_53_0.tar.bz2"
-tar jxf boost_1_53_0.tar.bz2
-
 # Compile an example, which generates random points and computes their miniball
-g++ -I../main -Iboost_1_53_0 example.C -o example -O3
+g++ -I../main example.C -o example -O3
 
 # Run it on one million points in 3D
 ./example 1000000 3

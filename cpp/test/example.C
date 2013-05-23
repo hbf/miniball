@@ -7,7 +7,7 @@
 #include <cstdio>
 
 #include "Seb.h"
-#include "Seb_debug.C" // ... only because we use Seb::Timer below
+#include "Seb_debug.C" // ... only needed because we use Seb::Timer below
 
 int main(int argn,char **argv) {
   typedef double FT;
@@ -21,45 +21,49 @@ int main(int argn,char **argv) {
 
   cout << "====================================================" << endl
        << "Seb example" << endl;
-  // check for right number of arguments ...
+
+  // Check for right number of arguments ...
   if (argn < 3) {
-    cout << "Usage: " << argv[0] << " number-of-points dimension" << endl
+    cout << "Usage: " << argv[0] << " number-of-points dimension [boundary]" << endl
+         << "If 'boundary' is given, all points will be on the boundary of a sphere." << endl
 	 << "====================================================" << endl;
     return 1;
   }
   cout << "====================================================" << endl;
-  // ... and parse command line arguments:
+  // ... and parse command line arguments
   const int n = std::atoi(argv[1]), d = std::atoi(argv[2]);
+  const bool on_boundary = argn > 3 && std::string(argv[3]) == "boundary";
 
-  // construct n random points in dimension d:
+  // Construct n random points in dimension d
   PointVector S;
   vector<double> coords(d);
   srand(clock());
   for (int i=0; i<n; ++i) {
 
-    // generate coorindates in [-1,1]:
+    // Generate coordindates in [-1,1]
     double len = 0;
     for (int j=0; j<d; ++j) {
       coords[j] = static_cast<FT>(2.0*rand()/RAND_MAX - 1.0);
       len += coords[j]*coords[j];
     }
 
-    // normalize length to "almost" 1:
-    const double Wiggle = 1e-2;
-    len = 1/(std::sqrt(len)+Wiggle*rand()/RAND_MAX);
-    for (int j=0; j<d; ++j)
-      coords[j] *= len;
-
+    // Normalize length to "almost" 1 (makes it harder for the algorithm)
+    if (on_boundary) {
+      const double Wiggle = 1e-2;
+      len = 1/(std::sqrt(len)+Wiggle*rand()/RAND_MAX);
+      for (int j=0; j<d; ++j)
+        coords[j] *= len;
+    }
     S.push_back(Point(d,coords.begin()));
   }
   cout << "Starting computation..." << endl
        << "====================================================" << endl;
   Seb::Timer::instance().start("all");
 
-  // compute the miniball by inserting each value
+  // Compute the miniball by inserting each value
   Miniball mb(d, S);
 
-  // output:
+  // Output
   FT rad = mb.radius();
   FT rad_squared = mb.squared_radius();
   cout << "Running time: " << Seb::Timer::instance().lapse("all") << "s" << endl
