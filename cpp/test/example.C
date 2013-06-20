@@ -68,7 +68,11 @@ int main(int argn,char **argv) {
   FT rad_squared = mb.squared_radius();
   cout << "Running time: " << Seb::Timer::instance().lapse("all") << "s" << endl
        << "Radius = " << rad << " (squared: " << rad_squared << ")" << endl
-       << "=====================================================" << endl;
+       << "Center:" << endl;
+  Miniball::Coordinate_iterator center_it = mb.center_begin();
+  for (int j=0; j<d; ++j) 
+    cout << "  " << center_it[j] << endl;
+  cout << "=====================================================" << endl;
 
   mb.verify();
   cout << "=====================================================" << endl;
