@@ -9,6 +9,28 @@
 #include "Seb.h"
 #include "Seb_debug.C" // ... only needed because we use Seb::Timer below
 
+class PointAcc_Array
+{
+   double const* ptr;
+   size_t num_points;
+   size_t dims;
+
+public:
+   PointAcc_Array( double const* ptr, size_t num_points, size_t dims ) :
+      ptr(ptr), num_points(num_points), dims(dims)
+   {
+   }
+
+   double const* operator[]( size_t ptr_idx ) const
+   {
+      return ptr + (ptr_idx * dims);
+   }
+
+   size_t size() const { return num_points; }
+};
+
+
+
 int main(int argn,char **argv) {
   typedef double FT;
   typedef Seb::Point<FT> Point;
@@ -34,6 +56,9 @@ int main(int argn,char **argv) {
   const int n = std::atoi(argv[1]), d = std::atoi(argv[2]);
   const bool on_boundary = argn > 3 && std::string(argv[3]) == "boundary";
 
+  vector<double> all_coords;
+  all_coords.reserve(d * n);
+
   // Construct n random points in dimension d
   PointVector S;
   vector<double> coords(d);
@@ -55,11 +80,15 @@ int main(int argn,char **argv) {
         coords[j] *= len;
     }
     S.push_back(Point(d,coords.begin()));
+
+    for (int j=0; j<d; ++j)
+      all_coords.push_back(coords[j]);
   }
-  cout << "Starting computation..." << endl
+  cout << "Starting computation... (many-vector approach)" << endl
        << "====================================================" << endl;
   Seb::Timer::instance().start("all");
 
+{
   // Compute the miniball by inserting each value
   Miniball mb(d, S);
 
@@ -76,6 +105,34 @@ int main(int argn,char **argv) {
 
   mb.verify();
   cout << "=====================================================" << endl;
+}
+
+
+
+{
+  cout << "Starting computation... (all-coords approach)" << endl
+       << "====================================================" << endl;
+  Seb::Timer::instance().start("all2");
+
+  // Compute the miniball by inserting each value
+  typedef Seb::Smallest_enclosing_ball< double, double const*, PointAcc_Array > Miniball2;
+  PointAcc_Array acc(&all_coords[0], n, d);
+  Miniball2 mb(d, acc);
+
+  // Output
+  FT rad = mb.radius();
+  FT rad_squared = mb.squared_radius();
+  cout << "Running time: " << Seb::Timer::instance().lapse("all") << "s" << endl
+       << "Radius = " << rad << " (squared: " << rad_squared << ")" << endl
+       << "Center:" << endl;
+  Miniball::Coordinate_iterator center_it = mb.center_begin();
+  for (int j=0; j<d; ++j)
+    cout << "  " << center_it[j] << endl;
+  cout << "=====================================================" << endl;
+
+  mb.verify();
+  cout << "=====================================================" << endl;
+}
 }
 
 
