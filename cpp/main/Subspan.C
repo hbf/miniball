@@ -9,6 +9,9 @@
 #include <numeric>
 #include <cmath>
 
+// for endl, cout
+#include <iostream>
+
 #include "Subspan.h" // Note: header included for better syntax highlighting in some IDEs.
 
 // The point members[r] is called the origin; we use the following macro

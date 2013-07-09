@@ -6,6 +6,8 @@
 #ifndef SEB_SUBSPAN_H
 #define SEB_SUBSPAN_H
 
+#include <vector>
+
 namespace SEB_NAMESPACE {
   
   template<typename Float>
