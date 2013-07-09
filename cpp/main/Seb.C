@@ -279,9 +279,14 @@ namespace SEB_NAMESPACE {
   template<typename Float, class Pt, class PointAccessor>
   void Smallest_enclosing_ball<Float, Pt, PointAccessor>::verify()
   {
+     verify( std::cout );
+  }
+
+  template<typename Float, class Pt, class PointAccessor>
+  void Smallest_enclosing_ball<Float, Pt, PointAccessor>::verify( std::ostream & out )
+  {
     using std::inner_product;
     using std::abs;
-    using std::cout;
     using std::endl;
     
     Float  min_lambda      = 1;  // for center-in-convex-hull check
@@ -314,12 +319,12 @@ namespace SEB_NAMESPACE {
         if (ball_error < min_underlength) min_underlength = ball_error;
     }
     
-    cout << "Solution errors (relative to radius, nonsquared)" << endl
+    out << "Solution errors (relative to radius, nonsquared)" << endl
     << "  final QR inconsistency     : " << qr_error << endl
     << "  minimal convex coefficient : ";
-    if (min_lambda >= 0) cout << "positive";
-    else cout << (-min_lambda);
-    cout << endl
+    if (min_lambda >= 0) out << "positive";
+    else out << (-min_lambda);
+    out << endl
     << "  maximal overlength         : "
     << (max_overlength / radius_) << endl
     << "  maximal underlength        : "
@@ -329,7 +334,7 @@ namespace SEB_NAMESPACE {
     
 #ifdef SEB_STATS_MODE
     // And let's print some statistics about the rank changes
-    cout << "=====================================================" << endl
+    out << "=====================================================" << endl
     << "Statistics" << endl;
     
     // determine how often a single point entered support at most
@@ -348,7 +353,7 @@ namespace SEB_NAMESPACE {
     // ... and print it
     for (int j = 0; j <= max_enter; j++)
       if (histogram[j])
-        cout << histogram[j] << " points entered " << j << " times" << endl;
+        out << histogram[j] << " points entered " << j << " times" << endl;
 #endif // SEB_STATS MODE
   }
   
@@ -356,18 +361,24 @@ namespace SEB_NAMESPACE {
   template<typename Float, class Pt, class PointAccessor>
   void Smallest_enclosing_ball<Float, Pt, PointAccessor>::test_affine_stuff()
   {
-    using std::cout;
+     test_affine_stuff( std::cout );
+  }
+
+
+  template<typename Float, class Pt, class PointAccessor>
+  void Smallest_enclosing_ball<Float, Pt, PointAccessor>::test_affine_stuff( std::ostream & out )
+  {
     using std::endl;
     
     Float *direction;
     Float  error;
     Float  max_representation_error = 0;
     
-    cout << S.size() << " points in " << dim << " dimensions" << endl;
+    out << S.size() << " points in " << dim << " dimensions" << endl;
     
     if (!is_empty()) {
       support = new Subspan<Float,PointAccessor,Pt>(dim,S,0);
-      cout << "initializing affine subspace with point S[0]" << endl;
+      out << "initializing affine subspace with point S[0]" << endl;
       
       direction = new Float[dim];
     }
@@ -378,18 +389,18 @@ namespace SEB_NAMESPACE {
       // Try to fill each point of S into aff
       for (int i = 0; i < S.size(); ++i) {
         
-        cout << endl << "Trying new point #" << i << endl;
+        out << endl << "Trying new point #" << i << endl;
         
         Float dist = sqrt(support->shortest_vector_to_span(S[i],direction));
-        cout << "dist(S[" << i << "],affine_hull) = "
+        out << "dist(S[" << i << "],affine_hull) = "
         << dist << endl;
         
         if (dist > 1.0E-8) {
-          cout << "inserting point S["<<i<<"] into affine hull"
+          out << "inserting point S["<<i<<"] into affine hull"
           << endl;
           support->add_point(i);
           
-          cout << "representation error: "
+          out << "representation error: "
           << (error = support->representation_error()) << endl;
           if (error > max_representation_error)
             max_representation_error = error;
@@ -404,22 +415,22 @@ namespace SEB_NAMESPACE {
         int k = support->size()/2;
         if (2 * k == support->size()) {
           //  size even
-          cout << endl << "Throwing out local point #" << k << endl;
+          out << endl << "Throwing out local point #" << k << endl;
           support->remove_point(k);
         } else {
           //  size odd
-          cout << endl << "Throughing out the origin" << endl;
+          out << endl << "Throughing out the origin" << endl;
           support->remove(support->size()-1);
         }
         
-        cout << "representation error: "
+        out << "representation error: "
         << (error = support->representation_error()) << endl;
         if (error > max_representation_error)
           max_representation_error = error;
       }
     }
     
-    cout << "maximal representation error: "
+    out << "maximal representation error: "
     << max_representation_error << endl
     << "End of test." << endl;
     
