@@ -115,9 +115,9 @@ int main(int argn,char **argv) {
   Seb::Timer::instance().start("all2");
 
   // Compute the miniball by inserting each value
-  typedef Seb::Smallest_enclosing_ball< double, double const*, PointAcc_Array > Miniball2;
+  typedef Seb::Smallest_enclosing_ball< double, double const*, PointAcc_Array > Miniball;
   PointAcc_Array acc(&all_coords[0], n, d);
-  Miniball2 mb(d, acc);
+  Miniball mb(d, acc);
 
   // Output
   FT rad = mb.radius();
@@ -133,6 +133,7 @@ int main(int argn,char **argv) {
   mb.verify();
   cout << "=====================================================" << endl;
 }
+
 }
 
 
