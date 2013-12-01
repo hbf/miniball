@@ -62,6 +62,14 @@ g++ -I../main example.C -o example -O3
 
 (More documentation to come. Contact us in case you run into any problems.)
 
+## Float or double?
+
+The C++ code is written using [templates](http://en.wikipedia.org/wiki/C%2B%2B#Templates) and allows the number type to be specified as a template argument.
+
+However, please only use `double` as the number type, as is illustrated in the example program [`example.C`](https://github.com/hbf/miniball/blob/master/cpp/test/example.C) (see line `typedef double FT`).
+
+The code will not run correctly if you use `float`.
+
 # License
 The code is available under the [Apache 2 License](http://www.apache.org/licenses/LICENSE-2.0.html), which is explained [here](http://www.tldrlegal.com/license/apache-license-2.0-(apache-2.0).
 
