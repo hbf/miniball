@@ -222,7 +222,17 @@ namespace SEB_NAMESPACE {
       Float scale = find_stop_fraction(stopper);
       SEB_LOG ("debug","  stop fraction = " << scale << std::endl);
       
-      if (stopper >= 0) {
+      // Note: In theory, the following if-statement should simply read
+      //
+      //  if (stopper >= 0) {
+      //    // ...
+      //
+      // However, due to rounding errors, it may happen in practice that
+      // stopper is nonnegative and the support is already full (see #14);
+      // in this casev we cannot add yet another point to the support.
+      //
+      // Therefore, the condition reads:
+      if (stopper >= 0 && support->size() <= dim) {
         // stopping point exists
         
         // walk as far as we can
