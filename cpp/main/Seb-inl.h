@@ -3,11 +3,11 @@
 // Authors: Martin Kutz <kutz@math.fu-berlin.de>,
 //          Kaspar Fischer <kf@iaeth.ch>
 
-#ifndef SEB_SEB_C
-#define SEB_SEB_C
+#ifndef SEB_SEB_INL_H
+#define SEB_SEB_INL_H
 
-#include <numeric>
 #include <algorithm>
+#include <numeric>
 
 #include "Seb.h" // Note: header included for better syntax highlighting in some IDEs.
 
@@ -443,4 +443,4 @@ namespace SEB_NAMESPACE {
   
 } // namespace SEB_NAMESPACE
 
-#endif // SEB_SEB_C
+#endif // SEB_SEB_INL_H

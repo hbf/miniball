@@ -175,6 +175,6 @@ namespace SEB_NAMESPACE {
   
 } // namespace SEB_NAMESPACE
 
-#include "Seb.C"
+#include "Seb-inl.h"
 
 #endif // SEB_SEB_H

@@ -7,8 +7,8 @@
 #define SEB_CONFIGURE_H
 
 #include <cassert>
-#include <iostream>
 #include <iomanip>
+#include <iostream>
 
 #define SEB_NAMESPACE Seb              // namespace of the library
 // #define SEB_ASSERTION_MODE          // enables (cheap) assertions
