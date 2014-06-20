@@ -3,13 +3,15 @@
 // Authors: Martin Kutz <kutz@math.fu-berlin.de>,
 //          Kaspar Fischer <kf@iaeth.ch>
 
-#ifndef SEB_SUBSPAN_C
-#define SEB_SUBSPAN_C
+#ifndef SEB_SUBSPAN_INL_H
+#define SEB_SUBSPAN_INL_H
 
-#include <numeric>
 #include <cmath>
+#include <numeric>
+#include <ostream>
+#include "Seb_configure.h"
 
-#include "Subspan.h" // Note: header included for better syntax highlighting in some IDEs.
+#include "Subspan.h"  // Note: header included for better syntax highlighting in some IDEs.
 
 // The point members[r] is called the origin; we use the following macro
 // to increase the readibilty of the code:
@@ -369,4 +371,4 @@ namespace SEB_NAMESPACE {
   
 } // namespace SEB_NAMESPACE
 
-#endif // SEB_SUBSPAN_C
+#endif // SEB_SUBSPAN_INL_H

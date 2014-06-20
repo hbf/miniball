@@ -6,6 +6,9 @@
 #ifndef SEB_SUBSPAN_H
 #define SEB_SUBSPAN_H
 
+#include <vector>
+#include "Seb_configure.h"
+
 namespace SEB_NAMESPACE {
   
   template<typename Float>
@@ -159,7 +162,7 @@ namespace SEB_NAMESPACE {
     // in M.  The point members[r] is called the "origin."
     std::vector<unsigned int> members;
     
-  private: // member fields for maintainin the QR-decomposition:
+  private: // member fields for maintaining the QR-decomposition:
     Float **Q, **R;                    // (dim x dim)-matrices Q
     // (orthogonal) and R (upper
     // triangular); notice that
@@ -171,6 +174,6 @@ namespace SEB_NAMESPACE {
   
 } // namespace SEB_NAMESPACE
 
-#include "Subspan.C"
+#include "Subspan-inl.h"
 
 #endif // SEB_SUBSPAN_H

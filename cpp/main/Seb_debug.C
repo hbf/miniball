@@ -4,8 +4,8 @@
 //          Kaspar Fischer <kf@iaeth.ch>
 
 #include <cmath>
-#include <sys/time.h>
 #include <sys/resource.h>
+#include <sys/time.h>
 
 #include "Seb_configure.h"
 
@@ -120,4 +120,4 @@ namespace SEB_NAMESPACE {
     return now.ru_utime.tv_sec + now.ru_utime.tv_usec * 1e-6;
   }
   
-  } // namespace SEB_NAMESPACE
+} // namespace SEB_NAMESPACE
