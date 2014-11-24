@@ -5,4 +5,4 @@ mkdir build
 cd build
 cmake -i ..
 make
-make test
+make test    or    ctest

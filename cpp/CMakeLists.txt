@@ -9,5 +9,8 @@ add_executable (test_fromfile
 
 enable_testing ()
 
-add_test (infinite_loop_1 test_fromfile test/test_infinite_loop_1.txt)
-add_test (infinite_loop_2 test_fromfile test/test_infinite_loop_2.txt)
+SET (testdir ${CMAKE_CURRENT_SOURCE_DIR}/test)
+
+add_test (working_1 test_fromfile ${testdir}/test_working_1.txt)
+add_test (infinite_loop_1 test_fromfile ${testdir}/test_infinite_loop_1.txt)
+add_test (infinite_loop_2 test_fromfile ${testdir}/test_infinite_loop_2.txt)
