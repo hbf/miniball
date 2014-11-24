@@ -6,11 +6,13 @@
 #ifndef SEB_DEBUG_H
 #define SEB_DEBUG_H
 
-#include <fstream>
+#ifdef SEB_DEBUG_MODE
+
 #include <map>
 #include <string>
-#include <sys/resource.h>
+#include <fstream>
 #include <sys/time.h>
+#include <sys/resource.h>
 
 namespace SEB_NAMESPACE {
   
@@ -84,5 +86,7 @@ namespace SEB_NAMESPACE {
   };
   
 } // namespace SEB_NAMESPACE
+
+#endif
 
 #endif // SEB_DEBUG_H
