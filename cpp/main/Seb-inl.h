@@ -150,9 +150,16 @@ namespace SEB_NAMESPACE {
         bound -= inner_product(center_to_point,center_to_point+dim,
                                center_to_point,Float(0));
         bound /= 2 * (dist_to_aff_square - dir_point_prod);
+
+        // watch for numerical instability - if bound=0 then we are
+        // going to walk by zero units, and thus hit an infinite loop.
+        //
+        // If we are walking < 0, then we are going the wrong way,
+        // which can happen if we were to disable the test just above
+        // (the "dist_to_aff_square-dir_point_prod" test)
         
         // take the smallest fraction:
-        if (bound < scale) {
+        if (bound > 0 && bound < scale) {
           scale   = bound;
           stopper = j;
           SEB_DEBUG (margin = dist_to_aff - dir_point_prod / dist_to_aff;)
