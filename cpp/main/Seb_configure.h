@@ -67,6 +67,10 @@
 
 // Debugging mode:
 #ifdef SEB_DEBUG_MODE
+
+// for endl, cout
+#  include <iostream>
+
   // The debugging mode always enables the timer mode as well:
   #ifndef SEB_TIMER_MODE
   #define SEB_TIMER_MODE
