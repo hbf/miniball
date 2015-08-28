@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
+import java.util.Locale;
 import java.util.Scanner;
 
 public class PointSetUtils
@@ -67,7 +68,7 @@ public class PointSetUtils
     try
     {
       Reader r = new InputStreamReader(new BufferedInputStream(s), "UTF-8");
-      Scanner in = new Scanner(r);
+      Scanner in = new Scanner(r).useLocale(Locale.US);
       try
       {
         final int n = in.nextInt();
