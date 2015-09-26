@@ -9,6 +9,8 @@
 #include <cstdio>
 #include <vector>
 
+#define SEB_DEBUG_MODE 1
+
 #include "Seb.h"
 #include "Seb_debug.C"
 

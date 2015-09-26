@@ -9,6 +9,8 @@
 
 #include "Seb_configure.h"
 
+#ifdef SEB_DEBUG_MODE
+
 namespace SEB_NAMESPACE {
   
   // Implementation of class Logger:
@@ -127,3 +129,5 @@ namespace SEB_NAMESPACE {
   }
   
 } // namespace SEB_NAMESPACE
+
+#endif
