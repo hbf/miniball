@@ -354,7 +354,7 @@ public class Miniball
         bound = (squaredRadius - bound) / 2 / (distToAffSquare - dirPointProd);
 
         // Take the smallest fraction
-        if (bound < scale)
+        if (bound > 0 && bound < scale)
         {
           if (log) debug("found stopper " + j + " bound=" + bound + " scale=" + scale);
           scale = bound;
