@@ -9,6 +9,8 @@
 
 #include "Seb_configure.h"
 
+#ifdef SEB_DEBUG_MODE
+
 namespace SEB_NAMESPACE {
   
   // Implementation of class Logger:
@@ -98,7 +100,10 @@ namespace SEB_NAMESPACE {
   {
     // fetch current usage:
     rusage now;
-    int status = getrusage(RUSAGE_SELF,&now);
+#ifdef SEB_ASSERTION_MODE
+    int status =
+#endif
+       getrusage(RUSAGE_SELF,&now);
     SEB_ASSERT(status == 0);
     
     // save it:
@@ -112,7 +117,10 @@ namespace SEB_NAMESPACE {
     
     // get current usage:
     rusage now;
-    int status = getrusage(RUSAGE_SELF,&now);
+#ifdef SEB_ASSERTION_MODE
+    int status =
+#endif
+       getrusage(RUSAGE_SELF,&now);
     SEB_ASSERT(status == 0);
     
     // compute elapsed usage:
@@ -121,3 +129,5 @@ namespace SEB_NAMESPACE {
   }
   
 } // namespace SEB_NAMESPACE
+
+#endif

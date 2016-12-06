@@ -116,18 +116,24 @@ namespace SEB_NAMESPACE {
     
   public: // testing:
     
-    void verify();
     //  Verifies whether center lies really in affine hull,
     //  determines the consistency of the QR decomposition,
     //  and check whether all points of Q lie on the ball
     //  and all others within;
     //  prints the respective errors.
+    void verify( std::ostream & out );
+
+    // prints to std::cout
+    void verify();
     
-    void test_affine_stuff();
     // Runs some testing routines on the affine hull layer,
     // using the points in S.
     // Creates a new Q, so better use before or after actual computations.
     // Prints the accumulated error.
+    void test_affine_stuff( std::ostream & out );
+
+    // prints to std::cout
+    void test_affine_stuff();
     
     
   private: // internal routines concerning storage:

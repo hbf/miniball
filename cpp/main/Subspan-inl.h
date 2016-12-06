@@ -8,10 +8,9 @@
 
 #include <cmath>
 #include <numeric>
-#include <ostream>
 #include "Seb_configure.h"
 
-#include "Subspan.h"  // Note: header included for better syntax highlighting in some IDEs.
+#include "Subspan.h" // Note: header included for better syntax highlighting in some IDEs.
 
 // The point members[r] is called the origin; we use the following macro
 // to increase the readibilty of the code:
