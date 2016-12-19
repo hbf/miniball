@@ -13,8 +13,8 @@
 
 namespace SEB_NAMESPACE {
   
-  template<typename Float, class Pt, class PointAccessor>
-  void Smallest_enclosing_ball<Float, Pt, PointAccessor>::allocate_resources()
+  template<typename Float, class Pt>
+  void Smallest_enclosing_ball<Float, Pt>::allocate_resources()
   {
     center            = new Float[dim];
     center_to_aff     = new Float[dim];
@@ -22,8 +22,8 @@ namespace SEB_NAMESPACE {
     lambdas           = new Float[dim+1];
   }
   
-  template<typename Float, class Pt, class PointAccessor>
-  void Smallest_enclosing_ball<Float, Pt, PointAccessor>::deallocate_resources()
+  template<typename Float, class Pt>
+  void Smallest_enclosing_ball<Float, Pt>::deallocate_resources()
   {
     delete[] center;
     delete[] center_to_aff;
@@ -34,29 +34,29 @@ namespace SEB_NAMESPACE {
       delete support;
   }
   
-  template<typename Float, class Pt, class PointAccessor>
-  void Smallest_enclosing_ball<Float, Pt, PointAccessor>::init_ball()
-  // Precondition: |S| > 0
-  // Sets up the search ball with an arbitrary point of S as center
+  template<typename Float, class Pt>
+  void Smallest_enclosing_ball<Float, Pt>::init_ball()
+  // Precondition: num_points > 0
+  // Sets up the search ball with an arbitrary point of the set as center
   // and with with exactly one of the points farthest from center in
   // support, which is instantiated here.
   // So the current ball contains all points of S and has radius at
   // most twice as large as the minball.
   {
-    SEB_ASSERT(S.size() > 0);
+    SEB_ASSERT(num_points > 0);
     
     // set center to the first point in S:
     for (unsigned int i = 0; i < dim; ++i)
-      center[i] = S[0][i];
+      center[i] = points[0][i];
     
     // find farthest point:
     radius_square = 0;
     unsigned int farthest = 0; // Note: assignment prevents compiler warnings.
-    for (unsigned int j = 1; j < S.size(); ++j) {
-      // compute squared distance from center to S[j]:
+    for (unsigned int j = 1; j < num_points; ++j) {
+      // compute squared distance from center to point j:
       Float dist = 0;
       for (unsigned int i = 0; i < dim; ++i)
-        dist += sqr(S[j][i] - center[i]);
+        dist += sqr(points[j][i] - center[i]);
       
       // enlarge radius if needed:
       if (dist >= radius_square) {
@@ -69,15 +69,15 @@ namespace SEB_NAMESPACE {
     // initialize support to the farthest point:
     if (support != NULL)
       delete support;
-    support = new Subspan<Float, Pt, PointAccessor>(dim,S,farthest);
+    support = new Subspan<Float, Pt>(dim,points,num_points,farthest);
     
     // statistics:
     // initialize entry-counters to zero:
-    SEB_STATS(entry_count = std::vector<int>(S.size(),0));
+    SEB_STATS(entry_count = std::vector<int>(num_points,0));
   }
   
-  template<typename Float, class Pt, class PointAccessor>
-  bool Smallest_enclosing_ball<Float, Pt, PointAccessor>::successful_drop()
+  template<typename Float, class Pt>
+  bool Smallest_enclosing_ball<Float, Pt>::successful_drop()
   // Precondition: center lies in aff(support).
   // If center doesn't already lie in conv(support) and is thus
   // not optimal yet, successful_drop() elects a suitable point k to
@@ -106,8 +106,8 @@ namespace SEB_NAMESPACE {
     return false;
   }
   
-  template<typename Float, class Pt, class PointAccessor>
-  Float Smallest_enclosing_ball<Float, Pt, PointAccessor>::find_stop_fraction(int& stopper)
+  template<typename Float, class Pt>
+  Float Smallest_enclosing_ball<Float, Pt>::find_stop_fraction(int& stopper)
   // Given the center of the current enclosing ball and the
   // walking direction center_to_aff, determine how much we can walk
   // into this direction without losing a point from S.  The (positive)
@@ -123,13 +123,13 @@ namespace SEB_NAMESPACE {
     
     SEB_DEBUG (Float margin = 0;)
     
-    // ... but one of the points in S might hinder us:
-    for (unsigned int j = 0; j < S.size(); ++j)
+    // ... but one of the points in the set might hinder us:
+    for (unsigned int j = 0; j < num_points; ++j)
       if (!support->is_member(j)) {
         
-        // compute vector center_to_point from center to the point S[i]:
+        // compute vector center_to_point from center to the point points[i]:
         for (unsigned int i = 0; i < dim; ++i)
-          center_to_point[i] = S[j][i] - center[i];
+          center_to_point[i] = points[j][i] - center[i];
         
         const Float dir_point_prod
         = inner_product(center_to_aff,center_to_aff+dim,
@@ -143,7 +143,7 @@ namespace SEB_NAMESPACE {
           continue;
         
         // compute the fraction we can walk along center_to_aff until
-        // we hit point S[i] on the boundary:
+        // we hit point points[i] on the boundary:
         // (Better don't try to understand this calculus from the code,
         //  it needs some pencil-and-paper work.)
         Float bound = radius_square;
@@ -172,8 +172,8 @@ namespace SEB_NAMESPACE {
   }
   
   
-  template<typename Float, class Pt, class PointAccessor>
-  void Smallest_enclosing_ball<Float, Pt, PointAccessor>::update()
+  template<typename Float, class Pt>
+  void Smallest_enclosing_ball<Float, Pt>::update()
   // The main function containing the main loop.
   // Iteratively, we compute the point in support that is closest
   // to the current center and then walk towards this target as far
@@ -247,7 +247,7 @@ namespace SEB_NAMESPACE {
           center[i] += scale * center_to_aff[i];
         
         // update the radius
-        const Pt& stop_point = S[support->any_member()];
+        const Pt& stop_point = points[support->any_member()];
         radius_square = 0;
         for (unsigned int i = 0; i < dim; ++i)
           radius_square += sqr(stop_point[i] - center[i]);
@@ -269,7 +269,7 @@ namespace SEB_NAMESPACE {
           center[i] += center_to_aff[i];
         
         // update the radius:
-        const Pt& stop_point = S[support->any_member()];
+        const Pt& stop_point = points[support->any_member()];
         radius_square = 0;
         for (unsigned int i = 0; i < dim; ++i)
           radius_square += sqr(stop_point[i] - center[i]);
@@ -293,8 +293,8 @@ namespace SEB_NAMESPACE {
     }
   }
   
-  template<typename Float, class Pt, class PointAccessor>
-  void Smallest_enclosing_ball<Float, Pt, PointAccessor>::verify()
+  template<typename Float, class Pt>
+  void Smallest_enclosing_ball<Float, Pt>::verify()
   {
     using std::inner_product;
     using std::abs;
@@ -314,11 +314,11 @@ namespace SEB_NAMESPACE {
         min_lambda = lambdas[k];
     
     // all points in ball, all support points really on boundary?
-    for (unsigned int k = 0; k < S.size(); ++k) {
+    for (unsigned int k = 0; k < num_points; ++k) {
       
       // compare center-to-point distance with radius
       for (unsigned int i = 0; i < dim; ++i)
-        center_to_point[i] = S[k][i] - center[i];
+        center_to_point[i] = points[k][i] - center[i];
       ball_error = sqrt(inner_product(center_to_point,center_to_point+dim,
                                       center_to_point,Float(0)))
       - radius_;
@@ -351,7 +351,7 @@ namespace SEB_NAMESPACE {
     
     // determine how often a single point entered support at most
     int max_enter = 0;
-    for (int i = 0; i < S.size(); ++i)
+    for (int i = 0; i < num_points; ++i)
       if (entry_count[i] > max_enter)
         max_enter = entry_count[i];
     ++max_enter;
@@ -360,7 +360,7 @@ namespace SEB_NAMESPACE {
     std::vector<int> histogram(max_enter+1);
     for (int j = 0; j <= max_enter; ++j)
       histogram[j] = 0;
-    for (int i = 0; i < S.size(); ++i)
+    for (int i = 0; i < num_points; ++i)
       histogram[entry_count[i]]++;
     // ... and print it
     for (int j = 0; j <= max_enter; j++)
@@ -370,8 +370,8 @@ namespace SEB_NAMESPACE {
   }
   
   
-  template<typename Float, class Pt, class PointAccessor>
-  void Smallest_enclosing_ball<Float, Pt, PointAccessor>::test_affine_stuff()
+  template<typename Float, class Pt>
+  void Smallest_enclosing_ball<Float, Pt>::test_affine_stuff()
   {
     using std::cout;
     using std::endl;
@@ -380,11 +380,11 @@ namespace SEB_NAMESPACE {
     Float  error;
     Float  max_representation_error = 0;
     
-    cout << S.size() << " points in " << dim << " dimensions" << endl;
+    cout << num_points << " points in " << dim << " dimensions" << endl;
     
     if (!is_empty()) {
-      support = new Subspan<Float,PointAccessor,Pt>(dim,S,0);
-      cout << "initializing affine subspace with point S[0]" << endl;
+      support = new Subspan<Float,Pt>(dim,points,num_points,0);
+      cout << "initializing affine subspace with point points[0]" << endl;
       
       direction = new Float[dim];
     }
@@ -392,17 +392,17 @@ namespace SEB_NAMESPACE {
     
     for (int loop = 0; loop < 5; ++loop) {
       
-      // Try to fill each point of S into aff
-      for (int i = 0; i < S.size(); ++i) {
+      // Try to fill each point of of the set into aff
+      for (int i = 0; i < num_points; ++i) {
         
         cout << endl << "Trying new point #" << i << endl;
         
-        Float dist = sqrt(support->shortest_vector_to_span(S[i],direction));
-        cout << "dist(S[" << i << "],affine_hull) = "
+        Float dist = sqrt(support->shortest_vector_to_span(points[i],direction));
+        cout << "dist(points[" << i << "],affine_hull) = "
         << dist << endl;
         
         if (dist > 1.0E-8) {
-          cout << "inserting point S["<<i<<"] into affine hull"
+          cout << "inserting point points["<<i<<"] into affine hull"
           << endl;
           support->add_point(i);
           
@@ -445,8 +445,8 @@ namespace SEB_NAMESPACE {
   }
   
   
-  template<typename Float, class Pt, class PointAccessor>
-  const Float Smallest_enclosing_ball<Float, Pt, PointAccessor>::Eps = Float(1e-14);
+  template<typename Float, class Pt>
+  const Float Smallest_enclosing_ball<Float, Pt>::Eps = Float(1e-14);
   
 } // namespace SEB_NAMESPACE
 

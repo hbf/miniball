@@ -17,7 +17,7 @@ namespace SEB_NAMESPACE {
     return x * x;
   }
   
-  template<typename Float, class Pt, class PointAccessor>
+  template<typename Float, class Pt>
   class Subspan
   // An instance of this class represents the affine hull of a
   // non-empty set M of affinely independent points.  The set M is not
@@ -33,7 +33,7 @@ namespace SEB_NAMESPACE {
   //   between 0 and dim+1.
   //   Complexity: O(1).
   //
-  // - bool is_member(int global_index) returns true iff S[global_index]
+  // - bool is_member(int global_index) returns true iff points[global_index]
   //   is a member of M.
   //   Complexity: O(1)
   //
@@ -76,11 +76,11 @@ namespace SEB_NAMESPACE {
   {
   public: // construction and deletion:
     
-    Subspan(unsigned int dim, const PointAccessor& S, int i);
+    Subspan(unsigned int dim, const Pt* points, const size_t num_points, int i);
     // Constructs an instance representing the affine hull aff(M) of M={p},
-    // where p is the point S[i] from S.
+    // where p is the point with index i from the set.
     //
-    // Notice that S must not changed as long as this instance of
+    // Notice that point set must not change as long as this instance of
     // Subspan<Float> is in use.
     
     ~Subspan();
@@ -99,7 +99,7 @@ namespace SEB_NAMESPACE {
     
     bool is_member(unsigned int i) const
     {
-      SEB_ASSERT(i < S.size());
+      SEB_ASSERT(i < num_points);
       return membership[i];
     }
     
@@ -152,8 +152,9 @@ namespace SEB_NAMESPACE {
     // A + u [1,...,1] = Q' R'.
     
   private: // member fields:
-    const PointAccessor &S;            // a const-reference to the set S
-    std::vector<bool> membership;      // S[i] in M iff membership[i]
+    const Pt* points;                  // points and num_points are the set of inserted
+    const size_t num_points;           // points, formally referred to as S
+    std::vector<bool> membership;      // points[i] in M iff membership[i]
     const unsigned int dim;            // ambient dimension (not to be
     // confused with the rank r,
     // see below)

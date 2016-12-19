@@ -16,10 +16,9 @@ namespace SEB_NAMESPACE {
   // template arguments:
   // Float must be a floating point data type for which * / - + are defined
   // Pt[i] must return the i-th coordinate as a Float
-  // PointAccessor[j] must return the j-th point in the data set as Pt and
   // size_t size() returns the size of the data set
   
-  template<typename Float, class Pt = Point<Float>, class PointAccessor = std::vector<Pt> >
+  template<typename Float, class Pt = Point<Float> >
   class Smallest_enclosing_ball
   // An instance of class Smallest_enclosing_ball<Float> represents
   // the smallest enclosing ball of a set S of points.  Initially, the
@@ -31,11 +30,22 @@ namespace SEB_NAMESPACE {
     
   public: // construction and destruction:
 
-    Smallest_enclosing_ball(unsigned int d, const PointAccessor &P)
+    Smallest_enclosing_ball(unsigned int d, const std::vector<Pt>& points)
     // Constructs an instance representing the miniball of points from
     // set S.  The dimension of the ambient space is fixed to d for
     // lifetime of the instance.
-    : dim(d), S(P), up_to_date(true), support(NULL)
+    : dim(d), points(points.data()), num_points(points.size()), up_to_date(true), support(NULL)
+    {
+      allocate_resources();
+      SEB_ASSERT(!is_empty());
+      update();
+    }
+    
+    Smallest_enclosing_ball(unsigned int d, const Pt* points, const size_t num_points)
+    // Constructs an instance representing the miniball of points from
+    // set S.  The dimension of the ambient space is fixed to d for
+    // lifetime of the instance.
+    : dim(d), points(points), num_points(num_points), up_to_date(true), support(NULL)
     {
       allocate_resources();
       SEB_ASSERT(!is_empty());
@@ -51,7 +61,7 @@ namespace SEB_NAMESPACE {
     
     void invalidate()
     // Notifies the instance that the underlying point set S (passed to the constructor
-    // of this instance as parameter P) has changed. This will cause the miniball to
+    // of this instance as points) has changed. This will cause the miniball to
     // be recomputed lazily (i.e., when you call for example radius(), the recalculation
     // will be triggered).
     {
@@ -64,7 +74,7 @@ namespace SEB_NAMESPACE {
     // Returns whether the miniball is empty, i.e., if no point has
     // been inserted so far.
     {
-      return S.size() == 0;
+      return num_points == 0;
     }
     
     Float squared_radius()
@@ -147,12 +157,13 @@ namespace SEB_NAMESPACE {
     
   private: // member fields:
     unsigned int dim;                 // dimension of the amient space
-    const PointAccessor &S;           // set S of inserted points
+    const Pt* points;                 // points and num_points are the set of inserted
+    const size_t num_points;          // points, formally referred to as S
     bool up_to_date;                  // whether the miniball has
                                       // already been computed
     Float *center;                    // center of the miniball
     Float radius_, radius_square;     // squared radius of the miniball
-    Subspan<Float, Pt, PointAccessor> *support;          // the points that lie on the current
+    Subspan<Float, Pt> *support;          // the points that lie on the current
     // boundary and "support" the ball;
     // the essential structure for update()
     
