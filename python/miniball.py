@@ -1,3 +1,10 @@
+"""
+    Copyright 2020 Filip Cornell
+    Synopsis: A binder for enabling this package using numpy arrays.
+
+    Author: Filip Cornell <fcornell@kth.se, c.filip.cornell@gmail.com>
+
+"""
 from ctypes import cdll, POINTER, c_int, c_double, byref
 import numpy as np
 import ctypes
@@ -25,7 +32,7 @@ def miniball(val):
     cols = int(val.shape[1])
     lib.miniball.restype = POINTER(
         ctypes.c_double * val.shape[1]
-    )  # ndpointer(ctypes.c_double, flags="C_CONTIGUOUS")
+    )
     center = lib.miniball(val, rows, cols, byref(a), byref(b))
     return {
         "center": np.array([i for i in center.contents]),

@@ -62,6 +62,17 @@ g++ -I../main example.C -o example -O3
 
 (More documentation to come. Contact us in case you run into any problems.)
 
+# Getting started (Python)
+
+On MacOS, do the following (not yet made on other ).
+
+1. Stand in the `python`-folder.
+2. Run `g++ -o miniball_python.so -shared miniball_python.cpp`.
+3. Run `pytest` (if you do not have it, install it through `pip install pytest`) to see that it works and that all tests pass.
+4. Does it work? Great! You are now ready to use the python function.
+
+Do note that if you use it for a project, you might have to copy over the code to that specific project, as it has not been set up so it would be installable through `pip`. 
+
 ## Float or double?
 
 The C++ code is written using [templates](http://en.wikipedia.org/wiki/C%2B%2B#Templates) and allows the number type to be specified as a template argument.

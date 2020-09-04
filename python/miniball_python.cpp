@@ -1,8 +1,8 @@
 /*
-Copyright 2020 Filip Cornell
-Synopsis: A binder for enabling this package using numpy arrays.
+  Copyright 2020 Filip Cornell
+  Synopsis: A binder for enabling this package using numpy arrays.
 
-Author: Filip Cornell <fcornell@kth.se>
+  Author: Filip Cornell <fcornell@kth.se, c.filip.cornell@gmail.com>
 
 */
 #include <Python/Python.h>
@@ -19,7 +19,6 @@ using std::vector;
 extern "C" {
 
     double* miniball(const double * val, int rows, int cols, double* a, double* b) {
-      //const double * val = (double *) indatav;
       PointVector S;
       int d = cols;
       vector<double> coords(d);
