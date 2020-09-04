@@ -14,6 +14,15 @@ lib = cdll.LoadLibrary("./miniball_python.so")
 
 
 def miniball(val):
+    """
+        Computes the miniball.
+
+        input: val, a 2D numpy-array with points as rows, features as columns.
+        output: a dict containing:
+            - center: a 1D numpy-vector with the center of the miniball.
+            - radius: The radius.
+            - radius_squared. The radius squared. 
+    """
     if isinstance(val, pd.DataFrame):
         val = val.values
 
