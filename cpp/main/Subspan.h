@@ -10,13 +10,13 @@
 #include "Seb_configure.h"
 
 namespace SEB_NAMESPACE {
-  
+
   template<typename Float>
   inline Float sqr(const Float x)
   {
     return x * x;
   }
-  
+
   template<typename Float, class Pt, class PointAccessor>
   class Subspan
   // An instance of this class represents the affine hull of a
@@ -75,65 +75,65 @@ namespace SEB_NAMESPACE {
   //   Complexity: O(dim^2)
   {
   public: // construction and deletion:
-    
+
     Subspan(unsigned int dim, const PointAccessor& S, int i);
     // Constructs an instance representing the affine hull aff(M) of M={p},
     // where p is the point S[i] from S.
     //
     // Notice that S must not changed as long as this instance of
     // Subspan<Float> is in use.
-    
+
     ~Subspan();
-    
+
   public: // modification:
-    
+
     void add_point(int global_index);
     void remove_point(unsigned int local_index);
-    
+
   public: // access:
-    
+
     unsigned int size() const
     {
       return r+1;
     }
-    
+
     bool is_member(unsigned int i) const
     {
       SEB_ASSERT(i < S.size());
       return membership[i];
     }
-    
+
     unsigned int global_index(unsigned int i) const
     {
       SEB_ASSERT(i < size());
       return members[i];
     }
-    
+
     unsigned int any_member() const {
       SEB_ASSERT(size()>0);
       return members[r];
     }
-    
+
     template<typename RandomAccessIterator1,
     typename RandomAccessIterator2>
     Float shortest_vector_to_span(RandomAccessIterator1 p,
                                   RandomAccessIterator2 w);
-    
+
     template<typename RandomAccessIterator1,
     typename RandomAccessIterator2>
     void find_affine_coefficients(RandomAccessIterator1 c,
                                   RandomAccessIterator2 coeffs);
-    
+
   public: // debugging routines:
-    
+
     Float representation_error();
     // Computes the coefficient representations of all points in the
     // (internally used) system (Q) and returns the maximal deviation
     // from the theoretical values.
     // Warning: This routine has running time O(dim^3).
-    
+
   private: // private helper routines:
-    
+
     void append_column();
     // Appends the new column u (which is a member of this instance) to
     // the right of "A = QR", updating Q and R.  It assumes r to still
@@ -141,27 +141,27 @@ namespace SEB_NAMESPACE {
     // insertion; r is not altered by this routine and should be changed
     // by the caller afterwards.
     // Precondition: r<dim
-    
+
     void hessenberg_clear(unsigned int start);
     // Given R in lower Hessenberg form with subdiagonal entries 0 to
     // pos-1 already all zero, clears the remaining subdiagonal entries
     // via Givens rotations.
-    
+
     void special_rank_1_update();
     // Update current QR-decomposition "A = QR" to
     // A + u [1,...,1] = Q' R'.
-    
+
   private: // member fields:
     const PointAccessor &S;            // a const-reference to the set S
     std::vector<bool> membership;      // S[i] in M iff membership[i]
     const unsigned int dim;            // ambient dimension (not to be
     // confused with the rank r,
     // see below)
-    
+
     // Entry i of members contains the index into S of the i-th point
     // in M.  The point members[r] is called the "origin."
     std::vector<unsigned int> members;
-    
+
   private: // member fields for maintaining the QR-decomposition:
     Float **Q, **R;                    // (dim x dim)-matrices Q
     // (orthogonal) and R (upper
@@ -171,7 +171,7 @@ namespace SEB_NAMESPACE {
     Float *u,*w;                       // needed for rank-1 update
     unsigned int r;                    // the rank of R (i.e. #points - 1)
   };
-  
+
 } // namespace SEB_NAMESPACE
 
 #include "Subspan-inl.h"

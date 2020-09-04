@@ -128,7 +128,7 @@ int main(int argn,char **argv) {
   o << "QMATRIX" << endl;
   for (int j=0; j<d; ++j)
       o << " y" << j << " y" << j << " -2" << endl;
-  
+
   o << "ENDATA" << endl;
 
   cout << "Conversion finished." << endl

@@ -70,13 +70,10 @@ int main(int argn,char **argv) {
        << "Radius = " << rad << " (squared: " << rad_squared << ")" << endl
        << "Center:" << endl;
   Miniball::Coordinate_iterator center_it = mb.center_begin();
-  for (int j=0; j<d; ++j) 
+  for (int j=0; j<d; ++j)
     cout << "  " << center_it[j] << endl;
   cout << "=====================================================" << endl;
 
   mb.verify();
   cout << "=====================================================" << endl;
 }
-
-
-
