@@ -1,5 +1,4 @@
 /*
-  Copyright 2020 Filip Cornell
   Synopsis: A binder for enabling this package using numpy arrays.
 
   Author: Filip Cornell <fcornell@kth.se, c.filip.cornell@gmail.com>
