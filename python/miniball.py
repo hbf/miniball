@@ -21,12 +21,15 @@ def miniball(val):
         output: a dict containing:
             - center: a 1D numpy-vector with the center of the miniball.
             - radius: The radius.
-            - radius_squared. The radius squared. 
+            - radius_squared. The radius squared.
     """
     if isinstance(val, pd.DataFrame):
         val = val.values
 
     assert isinstance(val, np.ndarray)
+    if val.flags["C_CONTIGUOUS"] is False:
+        val = val.copy(order="C")
+
     a = c_double(0)
     b = c_double(0)
     lib.miniball.argtypes = [
@@ -38,9 +41,7 @@ def miniball(val):
     ]
     rows = int(val.shape[0])
     cols = int(val.shape[1])
-    lib.miniball.restype = POINTER(
-        ctypes.c_double * val.shape[1]
-    )
+    lib.miniball.restype = POINTER(ctypes.c_double * val.shape[1])
     center = lib.miniball(val, rows, cols, byref(a), byref(b))
     return {
         "center": np.array([i for i in center.contents]),
