@@ -21,7 +21,6 @@ extern "C" {
       PointVector S;
       int d = cols;
       vector<double> coords(d);
-      std::cout << "d is " << d << std::endl;
       for (int i = 0; i < rows; ++i) {
         for (int j = 0; j < d; ++j) {
           coords[j] = val[j + d * i];
@@ -32,8 +31,6 @@ extern "C" {
       Miniball mb(d, S);
       *a = mb.radius();
       *b = mb.squared_radius();
-      std::cout << *a << std::endl;
-      std::cout << *b << std::endl;
 
       double* center = new double[d];
 
