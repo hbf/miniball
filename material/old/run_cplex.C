@@ -58,7 +58,7 @@ int main(int argn,char **argv) {
     cout << "====================================================" << endl
 	 << "Input file: " << argv[1] << endl
 	 << "====================================================" << endl
-	 << "Running time: " << Seb::Timer::instance().lapse("cplex") 
+	 << "Running time: " << Seb::Timer::instance().lapse("cplex")
 	 << "s" << endl
 	 << "Squared radius: " << std::setprecision(17)
 	 << std::setiosflags(std::ios::scientific)
@@ -69,7 +69,7 @@ int main(int argn,char **argv) {
   // error handling:
   catch (std::string msg) {
     cout << "Error: " << msg << "." << endl;
-    
+
     // fetch CPLEX error string from status:
     if (env != NULL) {
       char errormsg[1024];
