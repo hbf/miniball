@@ -5,7 +5,7 @@ import numpy as np
 def test_empty_vector():
     try:
         miniball(None)
-    except AssertionError:
+    except TypeError:
         assert True
 
 

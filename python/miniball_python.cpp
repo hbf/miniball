@@ -4,21 +4,24 @@
   Author: Filip Cornell <fcornell@kth.se, c.filip.cornell@gmail.com>
 
 */
+#define PY_SSIZE_T_CLEAN
 #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 
 #include <Python.h>
 #include <numpy/arrayobject.h>
 #include <iostream>
-#include <vector>
 #include <tuple>
+#include <vector>
 #include "../cpp/main/Seb.h"
 
 typedef Seb::Point<double> Point;
 typedef Seb::Smallest_enclosing_ball<double> Miniball;
+typedef std::tuple<std::vector<double>, double, double> MiniballData;
 
-static std::tuple<double*, double> miniball(const double *data, int rows, int cols) {
-    std::vector<Point> points;
+static double *miniball(const double *data, int rows, int cols, double *radius,
+                        double *radius_squared) {
     int d = cols;
+    std::vector<Point> points;
     std::vector<double> coords(d);
 
     for (int i = 0; i < rows; ++i) {
@@ -29,7 +32,8 @@ static std::tuple<double*, double> miniball(const double *data, int rows, int co
     }
 
     Miniball mb(d, points);
-    double radius = mb.radius();
+    *radius = mb.radius();
+    *radius_squared = mb.squared_radius();
 
     double *center = new double[d];
     Miniball::Coordinate_iterator center_it = mb.center_begin();
@@ -37,7 +41,7 @@ static std::tuple<double*, double> miniball(const double *data, int rows, int co
         center[j] = center_it[j];
     }
 
-    return std::tuple<double*, double>(center, radius);
+    return center;
 }
 
 static PyObject *miniball_python(PyObject *self, PyObject *args) {
@@ -59,9 +63,8 @@ static PyObject *miniball_python(PyObject *self, PyObject *args) {
     int cols = (int)dims[1];
 
     // Compute the miniball
-    double radius;
-    double *center;
-    std::tie(center, radius) = miniball(data, rows, cols);
+    double radius, radius_squared;
+    double *center = miniball(data, rows, cols, &radius, &radius_squared);
 
     // Convert everything to Python objects and return as the tuple (center,
     // radius).
@@ -69,10 +72,12 @@ static PyObject *miniball_python(PyObject *self, PyObject *args) {
     PyObject *center_array =
         PyArray_SimpleNewFromData(1, center_dims, NPY_DOUBLE, center);
 
-    PyObject *ret = PyTuple_New(2);
-    PyTuple_SetItem(ret, 0, center_array);
-    PyTuple_SetItem(ret, 1, PyFloat_FromDouble(radius));
-    return ret;
+    PyObject *res = PyDict_New();
+    PyDict_SetItemString(res, "center", center_array);
+    PyDict_SetItemString(res, "radius", PyFloat_FromDouble(radius));
+    PyDict_SetItemString(res, "radius_squared",
+                         PyFloat_FromDouble(radius_squared));
+    return res;
 }
 
 static PyMethodDef MiniballMethods[] = {
