@@ -10,7 +10,7 @@ This project is dedicated to Martin Kutz†.
 # Speed
 On a 2.66 GHz Intel Core i7 MacBook Pro, the code performs as follows:
 
-![](http://hbf.github.com/miniball/times.png)
+![](https://hbf.github.io/miniball/times.png)
 
 The chart shows the time in seconds (y-axis) needed for the computation of the miniball of *n* random points (x-axis) in dimensions *d* (3, 5, or 10 in this chart).
 
