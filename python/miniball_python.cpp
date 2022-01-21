@@ -16,7 +16,6 @@
 
 typedef Seb::Point<double> Point;
 typedef Seb::Smallest_enclosing_ball<double> Miniball;
-typedef std::tuple<std::vector<double>, double, double> MiniballData;
 
 static double *miniball(const double *data, int rows, int cols, double *radius,
                         double *radius_squared) {
