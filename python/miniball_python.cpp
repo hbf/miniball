@@ -1,7 +1,8 @@
 /*
   Synopsis: A binder for enabling this package using numpy arrays.
 
-  Author: Filip Cornell <fcornell@kth.se, c.filip.cornell@gmail.com>
+  Original author: Filip Cornell <fcornell@kth.se, c.filip.cornell@gmail.com>
+  Modified by: Adam Heins <mail@adamheins.com>
 
 */
 #define PY_SSIZE_T_CLEAN
@@ -9,8 +10,6 @@
 
 #include <Python.h>
 #include <numpy/arrayobject.h>
-#include <iostream>
-#include <tuple>
 #include <vector>
 #include "../cpp/main/Seb.h"
 
