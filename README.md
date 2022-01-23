@@ -67,11 +67,9 @@ g++ -I../main example.C -o example -O3
 On MacOS, do the following (not yet made on other ).
 
 1. Stand in the `python`-folder.
-2. Run `g++ -o miniball_python.so -shared miniball_python.cpp`.
+2. Run `pip install setup.py` (you may need to use the `--user` option or `sudo`).
 3. Run `pytest` (if you do not have it, install it through `pip install pytest`) to see that it works and that all tests pass.
 4. Does it work? Great! You are now ready to use the python function.
-
-Do note that if you use it for a project, you might have to copy over the code to that specific project, as it has not been set up so it would be installable through `pip`. 
 
 ## Float or double?
 
@@ -98,6 +96,7 @@ Many thanks go to the following people who have – sometimes substantially –
 
 
  * Thomas Otto (University of Hamburg) for [submitting several compiler fixes](https://github.com/hbf/miniball/issues/3) (g++ 4.7 and 4.5 on SUSE Linux 12.2 and 11.3) and for [introducing generic point and point coordinate accessors](https://github.com/hbf/miniball/pull/5) in the code.
+* [Adam Heins](https://github.com/adamheins) (University of Toronto) for [updating the Python bindings](https://github.com/hbf/miniball/pull/32) to be installable with `pip`.
 
 # Links
   * For small dimensions like 2D or 3D, [Bernd Gärtner's code](http://www.inf.ethz.ch/personal/gaertner/miniball.html), which is based on Welzl's algorithm, may be faster.
