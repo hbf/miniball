@@ -1,4 +1,6 @@
-﻿namespace SEB;
+﻿using System.Text;
+
+namespace SEB;
 
 /// <summary>
 /// Information about the quality of the computed ball.
@@ -71,18 +73,33 @@ public class Quality
         this.supportSize = supportSize;
     }
 
+    public string ConsoleFmt()
+    {
+        var sb = new StringBuilder();
+
+        sb.AppendLine("Solution errors (relative to radius, nonsquared)");
+        sb.AppendLine($"  final QR inconsistency     : {qrInconsistency}");
+        sb.AppendLine($"  minimal convex coefficient : {(minConvexCoefficient >= 0 ? "positive" : -minConvexCoefficient)}");
+        sb.AppendLine($"  maximal overlength         : {maxOverlength}");
+        sb.AppendLine($"  maximal underlength        : {maxUnderlength}");
+        sb.AppendLine($"  iterations                 : {iterations}");
+        sb.AppendLine($"  supportSize                : {supportSize}");
+
+        return sb.ToString();
+    }
+
     public override string ToString() => "Quality [qrInconsistency="
-        + qrInconsistency
-        + ", minConvexCoefficient="
-        + minConvexCoefficient
-        + ", maxOverlength="
-        + maxOverlength
-        + ", maxUnderlength="
-        + maxUnderlength
-        + ", iterations="
-        + iterations
-        + ", supportSize="
-        + supportSize
-        + "]";
+      + qrInconsistency
+      + ", minConvexCoefficient="
+      + minConvexCoefficient
+      + ", maxOverlength="
+      + maxOverlength
+      + ", maxUnderlength="
+      + maxUnderlength
+      + ", iterations="
+      + iterations
+      + ", supportSize="
+      + supportSize
+      + "]";
 
 }
