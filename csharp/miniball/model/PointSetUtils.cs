@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using static System.Math;
 
 namespace SEB;
 
@@ -11,14 +12,32 @@ public static class PointSetUtils
     /// <param name="d">dimension of the points in the point set</param>
     /// <param name="n">number of points</param>
     /// <param name="r">the random number generator</param>
+    /// <param name="on_boundary">Normalize length to "almost" 1 (makes it harder for the algorithm)</param>
     /// <returns>a point set with {@code n} {@code d}-dimensional points</returns>
-    public static ArrayPointSet RandomPointSet(int d, int n, Random r)
+    public static ArrayPointSet RandomPointSet(int d, int n, Random r, bool on_boundary = false)
     {
         var pts = new ArrayPointSet(d, n);
 
         for (int i = 0; i < n; ++i)
+        {
+            var len = 0d;
+
             for (int j = 0; j < d; ++j)
-                pts.Set(i, j, r.NextDouble());
+            {
+                // Generate coordindates in [-1,1]
+                var v = 2d * r.NextDouble() - 1;
+                pts.Set(i, j, v);
+                len += v * v;
+            }
+
+            // Normalize length to "almost" 1 (makes it harder for the algorithm)
+            if (on_boundary)
+            {
+                var Wiggle = 1e-2;
+                len = 1d / Sqrt(len) + Wiggle * r.NextDouble();
+                for (int j = 0; j < d; ++j) pts.Set(i, j, pts.Coord(i, j) * len);
+            }
+        }
 
         return pts;
     }
