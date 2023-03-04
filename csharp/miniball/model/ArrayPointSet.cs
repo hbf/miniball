@@ -38,8 +38,8 @@ public class ArrayPointSet : PointSet
     /// <summary>
     /// Sets the <i>j</i>th Euclidean coordinate of the <i>i</i>th point to the given value.
     /// </summary>
-    /// <param name="i">the number of the point, 0 ≤ i < {@code size()}</param>
-    /// <param name="j">the dimension of the coordinate of interest, 0 ≤ j ≤ {@code dimension()}</param>
+    /// <param name="i">the number of the point, 0 ≤ i &lt; size()</param>
+    /// <param name="j">the dimension of the coordinate of interest, 0 ≤ j ≤ dimension()</param>
     /// <param name="v">the value to set as the <i>j</i>th Euclidean coordinate of the <i>i</i>th point</param>
     public void Set(int i, int j, double v)
     {

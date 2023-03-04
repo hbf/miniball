@@ -9,7 +9,7 @@
 /// <p>
 /// Notice that most algorithms that use {@link PointSet}s will assume that the underlying point set
 /// is <i>immutable</i>.
-/// <p>
+/// </p>
 /// For optimal performance, you may want to copy your points to a Java array and use a ArrayPointSet.
 /// </summary>
 public interface PointSet
