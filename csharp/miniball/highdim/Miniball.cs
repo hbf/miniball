@@ -333,7 +333,7 @@ public class Miniball
     /// <br/>
     /// This method should be called for testing purposes only; it may not be very efficient.
     /// </summary>
-    public Quality verify()
+    public Quality Verify()
     {
         var min_lambda = 1d; // for center-in-convex-hull check
         var max_overlength = 0d; // for all-points-in-ball check
@@ -395,7 +395,7 @@ public class Miniball
                 .Append(", squaredRadius=")
                 .Append(squaredRadius)
                 .Append(", quality=")
-                .Append(verify());
+                .Append(Verify());
         }
         sb.Append("]");
 
