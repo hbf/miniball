@@ -71,6 +71,28 @@ On MacOS, do the following (not yet made on other ).
 3. Run `pytest` (if you do not have it, install it through `pip install pytest`) to see that it works and that all tests pass.
 4. Does it work? Great! You are now ready to use the python function.
 
+# Getting started (C#)
+
+On Linux or MacOS, the following steps will get you going:
+
+```bash
+# Get the source code
+git clone https://github.com/hbf/miniball.git
+cd miniball/csharp
+
+# Compile an example, which generates random points and computes their miniball
+dotnet build
+
+# Run it on one million points in 3D
+./example/bin/Debug/net7.0/example 1000000 3
+```
+
+To run unit tests:
+
+```bash
+dotnet test
+```
+
 ## Float or double?
 
 The C++ code is written using [templates](http://en.wikipedia.org/wiki/C%2B%2B#Templates) and allows the number type to be specified as a template argument.
