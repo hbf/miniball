@@ -51,8 +51,17 @@ static PyObject *miniball_python(PyObject *self, PyObject *args) {
 
     int ndim = PyArray_NDIM(arr);
     if (ndim != 2) {
+        PyErr_SetString(PyExc_RuntimeError, "Expected ndim=2");
         return NULL;
     }
+
+    int type = PyArray_TYPE(arr);
+    if (type != NPY_DOUBLE) {
+        PyErr_SetString(PyExc_RuntimeError, "Expected dtype=float64");
+        return NULL;
+    }
+
+    arr = PyArray_GETCONTIGUOUS(arr);
 
     // Extract required data
     double *data = (double *)PyArray_DATA(arr);
