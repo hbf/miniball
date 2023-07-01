@@ -36,7 +36,7 @@ Maven dependency:
 
 SBT dependency:
 
-    libraryDependencies += "com.dreizak" % "miniball" % "1.0.1"
+    libraryDependencies += "com.dreizak" % "miniball" % "1.0.3"
 
 Documentation:
 
