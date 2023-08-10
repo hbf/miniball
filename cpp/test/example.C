@@ -7,7 +7,8 @@
 #include <cstdio>
 
 #include "Seb.h"
-#include "Seb_debug.h" // ... only needed because we use Seb::Timer below
+#include "Seb_debug.h"
+#include "Seb_debug.C" // ... only needed because we use Seb::Timer below
 
 int main(int argn,char **argv) {
   typedef double FT;
