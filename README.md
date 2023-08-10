@@ -120,6 +120,7 @@ Many thanks go to the following people who have – sometimes substantially –
  * Thomas Otto (University of Hamburg) for [submitting several compiler fixes](https://github.com/hbf/miniball/issues/3) (g++ 4.7 and 4.5 on SUSE Linux 12.2 and 11.3) and for [introducing generic point and point coordinate accessors](https://github.com/hbf/miniball/pull/5) in the code.
 * [Adam Heins](https://github.com/adamheins) (University of Toronto) for [updating the Python bindings](https://github.com/hbf/miniball/pull/32) to be installable with `pip`.
 * [Lorenzo Delana](https://github.com/devel0) for [porting Java to C#](https://github.com/hbf/miniball/pull/34).
+* [Jen Bradley](https://github.com/janbridley) for [updating the example code](https://github.com/hbf/miniball/pull/38) to work with g++ 10 and newer.
 
 # Links
   * For small dimensions like 2D or 3D, [Bernd Gärtner's code](http://www.inf.ethz.ch/personal/gaertner/miniball.html), which is based on Welzl's algorithm, may be faster.
