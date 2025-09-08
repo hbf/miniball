@@ -67,7 +67,7 @@ g++ -I../main example.C -o example -O3
 On MacOS, do the following (not yet made on other ).
 
 1. Stand in the `python`-folder.
-2. Run `pip install setup.py` (you may need to use the `--user` option or `sudo`).
+2. Run `pip install .` (you may need to use the `--user` option or `sudo`).
 3. Run `pytest` (if you do not have it, install it through `pip install pytest`) to see that it works and that all tests pass.
 4. Does it work? Great! You are now ready to use the python function.
 
