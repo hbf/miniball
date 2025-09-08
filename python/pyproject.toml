@@ -19,6 +19,12 @@ dependencies = [
   "nanobind",
 ]
 
+[project.optional-dependencies]
+test = ["pytest"]
+
+[project.urls]
+Source = "https://github.com/hbf/miniball"
+Issues = "https://github.com/hbf/miniball/issues"
 
 [tool.scikit-build]
 build.verbose = true
