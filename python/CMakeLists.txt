@@ -24,6 +24,16 @@ if (NOT SKBUILD)
   the package is imported. Otherwise, you need to re-run the above
   after editing C++ files.")
 endif()
+# Enable diagnostic colors for ninja
+if(CMAKE_COMPILER_IS_GNUCXX AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 5.0)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fdiagnostics-color=always")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fdiagnostics-color=always")
+endif()
+
+if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fcolor-diagnostics")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fcolor-diagnostics")
+endif()
 
 # Try to import all Python components potentially needed by nanobind
 find_package(Python 3.8
@@ -46,7 +56,7 @@ nanobind_add_module(
   NB_STATIC
 
   # Source code goes here
-  miniball/miniball_python.cpp
+  miniball_python.cpp
 )
 
 # Install directive for scikit-build-core
