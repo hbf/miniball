@@ -28,5 +28,12 @@ def test_identical_points():
 def test_two_points():
     test_vector = np.array([[3.0, 1.0], [3.0, 1.0], [1.0, 0.0]], dtype=np.double)
     res = miniball(test_vector)
-    assert (res["center"] == np.array([2.0, 0.5])).all()
+    np.testing.assert_allclose(res["center"], [2.0, 0.5])
     assert res["radius_squared"] == 1.25
+
+
+def test_three_points():
+    test_vector = [[0, 1], [1, 0], [1, 1]]
+    res = miniball(test_vector)
+    np.testing.assert_allclose(res["center"], [0.5, 0.5])
+    assert res["radius_squared"] == 0.5
