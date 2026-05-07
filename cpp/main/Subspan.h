@@ -89,6 +89,8 @@ namespace SEB_NAMESPACE {
 
     void add_point(int global_index);
     void remove_point(unsigned int local_index);
+    void resize_membership();
+    void reset(unsigned int global_index);
 
   public: // access:
 

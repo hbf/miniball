@@ -42,6 +42,27 @@ namespace SEB_NAMESPACE {
       update();
     }
 
+    Smallest_enclosing_ball(unsigned int d, const PointAccessor &P,
+                            const Float* previous_center,
+                            Float previous_squared_radius,
+                            unsigned int new_point_index)
+    // Constructs an instance representing the miniball of points from
+    // set S, using the miniball of S without new_point_index as a warm
+    // start. The new point is assumed to lie outside that previous ball.
+    : dim(d), S(P), up_to_date(true), support(NULL)
+    {
+      allocate_resources();
+      SEB_ASSERT(!is_empty());
+      update(previous_center, previous_squared_radius, new_point_index);
+      // Warm starting is an optimization; keep the constructor exact if that
+      // start does not preserve the enclosing-ball invariant.
+      for (unsigned int j = 0; j < S.size(); ++j)
+        if (!contains(S[j])) {
+          update();
+          break;
+        }
+    }
+
     ~Smallest_enclosing_ball()
     {
       deallocate_resources();
@@ -57,6 +78,8 @@ namespace SEB_NAMESPACE {
     {
       up_to_date = false;
     }
+
+    void append_point(unsigned int new_point_index);
 
   public: // access:
 
@@ -114,6 +137,20 @@ namespace SEB_NAMESPACE {
       return center+dim;
     }
 
+    bool contains(const Pt& point)
+    // Returns whether point is contained in the miniball.
+    // Precondition: !is_empty()
+    {
+      if (!up_to_date)
+        update();
+
+      SEB_ASSERT(!is_empty());
+      Float dist = 0;
+      for (unsigned int i = 0; i < dim; ++i)
+        dist += sqr(point[i] - center[i]);
+      return dist <= radius_square;
+    }
+
   public: // testing:
 
     void verify();
@@ -137,9 +174,13 @@ namespace SEB_NAMESPACE {
   private: // internal helper routines for the actual algorithm:
     void init_ball();
     Float find_stop_fraction(int& hinderer);
+    Float find_stop_fraction(const Float* direction, int& hinderer);
     bool successful_drop();
+    void pivot();
 
-    void update();
+    void update(const Float* previous_center = NULL,
+                Float previous_squared_radius = 0,
+                unsigned int new_point_index = 0);
 
   private: // we forbid copying (since we have dynamic storage):
     Smallest_enclosing_ball(const Smallest_enclosing_ball&);

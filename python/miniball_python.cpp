@@ -7,13 +7,77 @@
 
 */
 #include "../cpp/main/Seb.h"
+#include <memory>
+#include <stdexcept>
 #include <nanobind/nanobind.h>
 #include <nanobind/ndarray.h>
 
 namespace nb = nanobind;
 
 using Point = Seb::Point<double>;
-using Miniball = Seb::Smallest_enclosing_ball<double>;
+using NativeMiniball = Seb::Smallest_enclosing_ball<double>;
+
+nb::dict miniball_result(NativeMiniball &mb, size_t dim) {
+  nb::dict result;
+  result["center"] =
+      nb::ndarray<double, nb::numpy>(mb.center_begin(), {dim}).cast();
+  result["radius"] = mb.radius();
+  result["radius_squared"] = mb.squared_radius();
+
+  return result;
+}
+
+class Miniball {
+public:
+  Miniball(
+      nb::ndarray<double, nb::shape<-1, -1>, nb::c_contig> points_arr) {
+    size_t n_points = points_arr.shape(0);
+    dim_ = points_arr.shape(1);
+    if (n_points == 0) {
+      throw std::invalid_argument("Input array must contain at least one point.");
+    }
+
+    const double *data = points_arr.data();
+    points_.reset(new std::vector<Point>());
+    points_->reserve(n_points);
+    for (size_t i = 0; i < n_points; ++i) {
+      points_->emplace_back(dim_, data + i * dim_);
+    }
+    miniball_.reset(new NativeMiniball(static_cast<unsigned int>(dim_), *points_));
+  }
+
+  nb::dict add(nb::ndarray<double, nb::shape<-1>, nb::c_contig> point_arr) {
+    if (point_arr.shape(0) != dim_) {
+      throw std::invalid_argument("Point must match the point-set dimension.");
+    }
+    add_point(point_arr.data());
+    return result();
+  }
+
+  nb::dict add_points(
+      nb::ndarray<double, nb::shape<-1, -1>, nb::c_contig> points_arr) {
+    if (points_arr.shape(1) != dim_) {
+      throw std::invalid_argument("Points must match the point-set dimension.");
+    }
+    const double *data = points_arr.data();
+    for (size_t i = 0; i < points_arr.shape(0); ++i) {
+      add_point(data + i * dim_);
+    }
+    return result();
+  }
+
+  nb::dict result() { return miniball_result(*miniball_, dim_); }
+
+private:
+  void add_point(const double *point) {
+    points_->emplace_back(dim_, point);
+    miniball_->append_point(static_cast<unsigned int>(points_->size() - 1));
+  }
+
+  size_t dim_;
+  std::unique_ptr<std::vector<Point>> points_;
+  std::unique_ptr<NativeMiniball> miniball_;
+};
 
 /**
  * @brief Computes the smallest enclosing ball for a set of points.
@@ -42,15 +106,46 @@ nb::dict compute_miniball(
   }
 
   // Compute the smallest enclosing ball.
-  Miniball mb(dim, points);
+  NativeMiniball mb(dim, points);
 
-  nb::dict result;
-  result["center"] =
-      nb::ndarray<double, nb::numpy>(mb.center_begin(), {dim}).cast();
-  result["radius"] = mb.radius();
-  result["radius_squared"] = mb.squared_radius();
+  return miniball_result(mb, dim);
+}
 
-  return result;
+/**
+ * @brief Computes the smallest enclosing ball after appending one point.
+ *
+ * The caller supplies the existing point set, its current miniball, and a new
+ * point outside that ball. The search starts from the smallest ball that
+ * contains the old ball and has the new point on its boundary.
+ */
+nb::dict compute_miniball_incremental(
+    nb::ndarray<double, nb::shape<-1, -1>, nb::c_contig> points_arr,
+    nb::ndarray<double, nb::shape<-1>, nb::c_contig> center_arr,
+    double radius_squared,
+    nb::ndarray<double, nb::shape<-1>, nb::c_contig> point_arr) {
+  size_t n_points = points_arr.shape(0);
+  size_t dim = points_arr.shape(1);
+
+  if (center_arr.shape(0) != dim || point_arr.shape(0) != dim) {
+    throw std::invalid_argument(
+        "Center and point must match the point-set dimension.");
+  }
+
+  const double *data = points_arr.data();
+  const double *old_center = center_arr.data();
+  const double *new_point = point_arr.data();
+
+  std::vector<Point> points;
+  points.reserve(n_points + 1);
+  for (size_t i = 0; i < n_points; ++i) {
+    points.emplace_back(dim, data + i * dim);
+  }
+  points.emplace_back(dim, new_point);
+
+  NativeMiniball mb(dim, points, old_center, radius_squared,
+              static_cast<unsigned int>(n_points));
+
+  return miniball_result(mb, dim);
 }
 
 // Define the Python module using the NB_MODULE macro.
@@ -58,4 +153,13 @@ nb::dict compute_miniball(
 NB_MODULE(_miniball, m) {
   m.def("_compute_miniball", &compute_miniball, nb::arg("points"),
         "Compute the smallest enclosing ball for a set of points.");
+  m.def("_compute_miniball_incremental", &compute_miniball_incremental,
+        nb::arg("points"), nb::arg("center"), nb::arg("radius_squared"),
+        nb::arg("point"),
+        "Compute the smallest enclosing ball after appending one outside point.");
+  nb::class_<Miniball>(m, "_Miniball")
+      .def(nb::init<nb::ndarray<double, nb::shape<-1, -1>, nb::c_contig>>())
+      .def("add", &Miniball::add)
+      .def("add_points", &Miniball::add_points)
+      .def("result", &Miniball::result);
 }

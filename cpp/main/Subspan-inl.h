@@ -89,6 +89,25 @@ namespace SEB_NAMESPACE {
   }
 
   template<typename Float, class Pt, class PointAccessor>
+  void Subspan<Float, Pt, PointAccessor>::resize_membership()
+  {
+    membership.resize(S.size(), false);
+  }
+
+  template<typename Float, class Pt, class PointAccessor>
+  void Subspan<Float, Pt, PointAccessor>::reset(unsigned int index)
+  {
+    membership.assign(S.size(), false);
+    for (unsigned int i=0; i<dim; ++i)
+      for (unsigned int j=0; j<dim; ++j)
+        Q[i][j] = (i==j)? 1 : 0;
+    members[r = 0] = index;
+    membership[index] = true;
+
+    SEB_LOG ("ranks",r << std::endl);
+  }
+
+  template<typename Float, class Pt, class PointAccessor>
   void Subspan<Float, Pt, PointAccessor>::add_point(int index) {
     SEB_ASSERT(!is_member(index));
 
