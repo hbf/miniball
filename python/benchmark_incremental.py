@@ -8,7 +8,7 @@ from pathlib import Path
 
 import numpy as np
 
-from miniball import Miniball, miniball
+from miniball import Miniball, miniball, simd_available
 
 
 def unit_direction(rng: np.random.Generator, dim: int) -> np.ndarray:
@@ -27,7 +27,7 @@ def generate_outside_sequence(
     distance_factor: float,
 ) -> np.ndarray:
     points = np.asarray(initial_points, dtype=np.float64)
-    stream = Miniball(points)
+    stream = Miniball(points, use_simd_if_available=False)
     current = stream.result()
     additions = []
 
@@ -45,13 +45,15 @@ def generate_outside_sequence(
 
 
 def time_full_recomputation(
-    all_points: np.ndarray, initial_count: int
+    all_points: np.ndarray, initial_count: int, use_simd_if_available: bool
 ) -> tuple[float, list[np.ndarray], dict[str, float]]:
     centers = []
     iterations = []
     start = time.perf_counter()
     for size in range(initial_count + 1, len(all_points) + 1):
-        current = miniball(all_points[:size])
+        current = miniball(
+            all_points[:size], use_simd_if_available=use_simd_if_available
+        )
         centers.append(np.asarray(current["center"]))
         iterations.append(int(current["iterations"]))
     elapsed = time.perf_counter() - start
@@ -59,9 +61,14 @@ def time_full_recomputation(
 
 
 def time_incremental(
-    all_points: np.ndarray, initial_count: int, centers: list[np.ndarray]
+    all_points: np.ndarray,
+    initial_count: int,
+    centers: list[np.ndarray],
+    use_simd_if_available: bool,
 ) -> tuple[float, dict[str, float]]:
-    stream = Miniball(all_points[:initial_count])
+    stream = Miniball(
+        all_points[:initial_count], use_simd_if_available=use_simd_if_available
+    )
     iterations = []
 
     start = time.perf_counter()
@@ -96,6 +103,7 @@ def run_case(
     additions_count: int,
     initial_count: int,
     distance_factor: float,
+    run_simd: bool,
 ) -> dict[str, float]:
     initial_points = rng.normal(size=(initial_count, dim))
     additions = generate_outside_sequence(
@@ -104,7 +112,7 @@ def run_case(
     all_points = np.vstack([initial_points, additions])
 
     full_seconds, centers, full_iteration_stats = time_full_recomputation(
-        all_points, initial_count
+        all_points, initial_count, use_simd_if_available=False
     )
     print('Finished full recomputation for dimension {}, point insertions {}'.format(dim, additions_count))
     print('Full recomputation took {:.4f} seconds'.format(full_seconds))
@@ -116,7 +124,7 @@ def run_case(
         )
     )
     update_seconds, iteration_stats = time_incremental(
-        all_points, initial_count, centers
+        all_points, initial_count, centers, use_simd_if_available=False
     )
     print('Finished updates for dimension {}, point insertions {}'.format(dim, additions_count))
     print('Updates took {:.4f} seconds'.format(update_seconds))
@@ -127,7 +135,7 @@ def run_case(
             iteration_stats["update_average_iterations"],
         )
     )
-    return {
+    row = {
         "dimension": dim,
         "additions": additions_count,
         "full_seconds": full_seconds,
@@ -138,6 +146,78 @@ def run_case(
         **full_iteration_stats,
         **iteration_stats,
     }
+
+    if run_simd:
+        simd_full_seconds, simd_centers, simd_full_iteration_stats = (
+            time_full_recomputation(
+                all_points, initial_count, use_simd_if_available=True
+            )
+        )
+        print(
+            "Finished SIMD full recomputation for dimension {}, point insertions {}".format(
+                dim, additions_count
+            )
+        )
+        print("SIMD full recomputation took {:.4f} seconds".format(simd_full_seconds))
+        print(
+            "SIMD full recomputation iterations: max {}, median {:.1f}, average {:.2f}".format(
+                simd_full_iteration_stats["full_max_iterations"],
+                simd_full_iteration_stats["full_median_iterations"],
+                simd_full_iteration_stats["full_average_iterations"],
+            )
+        )
+
+        simd_update_seconds, simd_iteration_stats = time_incremental(
+            all_points,
+            initial_count,
+            simd_centers,
+            use_simd_if_available=True,
+        )
+        print(
+            "Finished SIMD updates for dimension {}, point insertions {}".format(
+                dim, additions_count
+            )
+        )
+        print("SIMD updates took {:.4f} seconds".format(simd_update_seconds))
+        print(
+            "SIMD iterations per update: max {}, median {:.1f}, average {:.2f}".format(
+                simd_iteration_stats["update_max_iterations"],
+                simd_iteration_stats["update_median_iterations"],
+                simd_iteration_stats["update_average_iterations"],
+            )
+        )
+
+        row.update(
+            {
+                "simd_full_seconds": simd_full_seconds,
+                "simd_update_seconds": simd_update_seconds,
+                "simd_speedup": (
+                    simd_full_seconds / simd_update_seconds
+                    if simd_update_seconds > 0
+                    else float("inf")
+                ),
+                "simd_full_max_iterations": simd_full_iteration_stats[
+                    "full_max_iterations"
+                ],
+                "simd_full_median_iterations": simd_full_iteration_stats[
+                    "full_median_iterations"
+                ],
+                "simd_full_average_iterations": simd_full_iteration_stats[
+                    "full_average_iterations"
+                ],
+                "simd_update_max_iterations": simd_iteration_stats[
+                    "update_max_iterations"
+                ],
+                "simd_update_median_iterations": simd_iteration_stats[
+                    "update_median_iterations"
+                ],
+                "simd_update_average_iterations": simd_iteration_stats[
+                    "update_average_iterations"
+                ],
+            }
+        )
+
+    return row
 
 
 def write_csv(path: Path, rows: list[dict[str, float]]) -> None:
@@ -150,13 +230,20 @@ def write_csv(path: Path, rows: list[dict[str, float]]) -> None:
 def print_table(title: str, rows: list[dict[str, float]], x_key: str) -> None:
     print(f"\n{title}")
     print("-" * len(title))
-    print(
+    has_simd = bool(rows and "simd_full_seconds" in rows[0])
+    header = (
         f"{x_key:>10}  {'full (s)':>12}  {'updates (s)':>17}  "
         f"{'speedup':>10}  {'full max':>8}  {'full med':>8}  "
         f"{'full avg':>8}  {'upd max':>8}  {'upd med':>8}  {'upd avg':>8}"
     )
+    if has_simd:
+        header += (
+            f"  {'simd full (s)':>14}  {'simd updates (s)':>17}  "
+            f"{'simd speedup':>12}"
+        )
+    print(header)
     for row in rows:
-        print(
+        line = (
             f"{int(row[x_key]):>10}  "
             f"{row['full_seconds']:>12.4f}  "
             f"{row['update_seconds']:>17.4f}  "
@@ -168,6 +255,13 @@ def print_table(title: str, rows: list[dict[str, float]], x_key: str) -> None:
             f"{row['update_median_iterations']:>8.1f}  "
             f"{row['update_average_iterations']:>8.2f}"
         )
+        if has_simd:
+            line += (
+                f"  {row['simd_full_seconds']:>14.4f}  "
+                f"{row['simd_update_seconds']:>17.4f}  "
+                f"{row['simd_speedup']:>12.2f}"
+            )
+        print(line)
 
 
 def plot_results(path: Path, title: str, x_label: str, x_values, rows) -> None:
@@ -178,10 +272,33 @@ def plot_results(path: Path, title: str, x_label: str, x_values, rows) -> None:
 
     full = [row["full_seconds"] for row in rows]
     updates = [row["update_seconds"] for row in rows]
+    simd_full = (
+        [row["simd_full_seconds"] for row in rows]
+        if rows and "simd_full_seconds" in rows[0]
+        else None
+    )
+    simd_updates = (
+        [row["simd_update_seconds"] for row in rows]
+        if rows and "simd_update_seconds" in rows[0]
+        else None
+    )
 
     fig, ax = plt.subplots(figsize=(8, 5))
     ax.plot(x_values, full, marker="o", label="Full Recomputation")
     ax.plot(x_values, updates, marker="o", label="Warm Started Balls")
+    if simd_full is not None and simd_updates is not None:
+        ax.plot(
+            x_values,
+            simd_full,
+            marker="o",
+            label="Full Recomputation w/ SIMD acceleration",
+        )
+        ax.plot(
+            x_values,
+            simd_updates,
+            marker="o",
+            label="Warm Started Balls w/ SIMD acceleration",
+        )
     ax.set_title(title)
     ax.set_xlabel(x_label)
     ax.set_ylabel("Runtime (seconds)")
@@ -227,9 +344,14 @@ def main() -> None:
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
     rng = np.random.default_rng(args.seed)
+    run_simd = simd_available()
+    if run_simd:
+        print("SIMD acceleration is available; benchmark will include SIMD runs.")
+    else:
+        print("SIMD acceleration is not available; benchmark will run scalar only.")
 
     dimension_rows = [
-        run_case(rng, dim, 500, args.initial_count, args.distance_factor)
+        run_case(rng, dim, 500, args.initial_count, args.distance_factor, run_simd)
         for dim in [5, 10, 50, 100, 500, 1000]
     ]
     write_csv(output_dir / "vary_dimension.csv", dimension_rows)
@@ -250,7 +372,7 @@ def main() -> None:
     )
 
     addition_rows = [
-        run_case(rng, 500, additions, args.initial_count, args.distance_factor)
+        run_case(rng, 500, additions, args.initial_count, args.distance_factor, run_simd)
         for additions in [5, 10, 50, 100, 500, 1000]
     ]
     write_csv(output_dir / "vary_additions.csv", addition_rows)

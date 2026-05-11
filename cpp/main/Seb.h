@@ -9,6 +9,7 @@
 #include <vector>
 #include "Seb_configure.h"
 #include "Seb_point.h"
+#include "Seb_simd.h"
 #include "Subspan.h"
 
 namespace SEB_NAMESPACE {
@@ -31,11 +32,13 @@ namespace SEB_NAMESPACE {
 
   public: // construction and destruction:
 
-    Smallest_enclosing_ball(unsigned int d, const PointAccessor &P)
+    Smallest_enclosing_ball(unsigned int d, const PointAccessor &P,
+                            bool use_simd_if_available = true)
     // Constructs an instance representing the miniball of points from
     // set S.  The dimension of the ambient space is fixed to d for
     // lifetime of the instance.
     : dim(d), S(P), up_to_date(true), support(NULL),
+      use_simd(use_simd_if_available && detail::simd_available_for<Float>()),
       last_iteration_count(0)
     {
       allocate_resources();
@@ -46,11 +49,13 @@ namespace SEB_NAMESPACE {
     Smallest_enclosing_ball(unsigned int d, const PointAccessor &P,
                             const Float* previous_center,
                             Float previous_squared_radius,
-                            unsigned int new_point_index)
+                            unsigned int new_point_index,
+                            bool use_simd_if_available = true)
     // Constructs an instance representing the miniball of points from
     // set S, using the miniball of S without new_point_index as a warm
     // start. The new point is assumed to lie outside that previous ball.
     : dim(d), S(P), up_to_date(true), support(NULL),
+      use_simd(use_simd_if_available && detail::simd_available_for<Float>()),
       last_iteration_count(0)
     {
       allocate_resources();
@@ -148,9 +153,13 @@ namespace SEB_NAMESPACE {
 
       SEB_ASSERT(!is_empty());
       Float dist = 0;
-      for (unsigned int i = 0; i < dim; ++i)
-        dist += sqr(point[i] - center[i]);
+      dist = detail::squared_distance<Float>(point, center, dim, use_simd);
       return dist <= radius_square;
+    }
+
+    static bool simd_available()
+    {
+      return detail::simd_available();
     }
 
     unsigned int iterations()
@@ -204,6 +213,7 @@ namespace SEB_NAMESPACE {
     Subspan<Float, Pt, PointAccessor> *support;          // the points that lie on the current
     // boundary and "support" the ball;
     // the essential structure for update()
+    bool use_simd;
 
   private: // member fields for temporary use:
     Float *center_to_aff;

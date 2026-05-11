@@ -10,6 +10,7 @@
 #include <numeric>
 #include <ostream>
 #include "Seb_configure.h"
+#include "Seb_simd.h"
 
 #include "Subspan.h"  // Note: header included for better syntax highlighting in some IDEs.
 
@@ -51,8 +52,12 @@ namespace SEB_NAMESPACE {
   }
 
   template<typename Float, class Pt, class PointAccessor>
-  Subspan<Float, Pt, PointAccessor>::Subspan(unsigned int dim, const PointAccessor& S, int index)
-  : S(S), membership(S.size()), dim(dim), members(dim+1)
+  Subspan<Float, Pt, PointAccessor>::Subspan(unsigned int dim,
+                                             const PointAccessor& S,
+                                             int index,
+                                             bool use_simd_if_available)
+  : S(S), membership(S.size()), dim(dim), members(dim+1),
+    use_simd(use_simd_if_available && detail::simd_available_for<Float>())
   {
     // allocate storage for Q, R, u, and w:
     Q = new Float *[dim];
@@ -174,20 +179,16 @@ namespace SEB_NAMESPACE {
   shortest_vector_to_span(RandomAccessIterator1 p,
                           RandomAccessIterator2 w)
   {
-    using std::inner_product;
-
     // compute vector from p to origin, i.e., w = origin - p:
-    for (unsigned int i=0; i<dim; ++i)
-      w[i] = SEB_AFFINE_ORIGIN[i] - p[i];
+    detail::assign_difference<Float>(w, SEB_AFFINE_ORIGIN, p, dim, use_simd);
 
     // remove projections of w onto the affine hull:
     for (unsigned int j = 0; j < r; ++j) {
-      const Float scale = inner_product(w,w+dim,Q[j],Float(0));
-      for (unsigned int i = 0; i < dim; ++i)
-        w[i] -= scale * Q[j][i];
+      const Float scale = detail::dot<Float>(w, Q[j], dim, use_simd);
+      detail::axpy_inplace(w, -scale, Q[j], dim, use_simd);
     }
 
-    return inner_product(w,w+dim,w,Float(0));
+    return detail::squared_norm<Float>(w, dim, use_simd);
   }
 
   template<typename Float, class Pt, class PointAccessor>
@@ -230,15 +231,11 @@ namespace SEB_NAMESPACE {
                            RandomAccessIterator2 lambdas)
   {
     // compute relative position of p, i.e., u = p - origin:
-    for (unsigned int i=0; i<dim; ++i)
-      u[i] = p[i] - SEB_AFFINE_ORIGIN[i];
+    detail::assign_difference<Float>(u, p, SEB_AFFINE_ORIGIN, dim, use_simd);
 
     // calculate Q^T u into w:
-    for (unsigned int i = 0; i < dim; ++i) {
-      w[i] = 0;
-      for (unsigned int k = 0; k < dim; ++k)
-        w[i] += Q[i][k] * u[k];
-    }
+    for (unsigned int i = 0; i < dim; ++i)
+      w[i] = detail::dot<Float>(Q[i], u, dim, use_simd);
 
     // We compute the coefficients by backsubstitution.  Notice that
     //
@@ -269,11 +266,8 @@ namespace SEB_NAMESPACE {
     SEB_ASSERT(r < dim);
 
     //  compute new column R[r] = Q^T * u
-    for (unsigned int i = 0; i < dim; ++i) {
-      R[r][i] = 0;
-      for (unsigned int k = 0; k < dim; ++k)
-        R[r][i] += Q[i][k] * u[k];
-    }
+    for (unsigned int i = 0; i < dim; ++i)
+      R[r][i] = detail::dot<Float>(Q[i], u, dim, use_simd);
 
     //  zero all entries R[r][dim-1] down to R[r][r+1]
     for (unsigned int j = dim-1; j > r; --j) {
@@ -288,12 +282,7 @@ namespace SEB_NAMESPACE {
       R[r][j-1] = c * R[r][j-1] + s * R[r][j];
 
       //  rotate two Q-columns
-      for (unsigned int i = 0; i < dim; ++i) {
-        const Float a = Q[j-1][i];
-        const Float b = Q[j][i];
-        Q[j-1][i] =  c * a + s * b;
-        Q[j][i]   =  c * b - s * a;
-      }
+      detail::rotate_pair(Q[j-1], Q[j], c, s, dim, use_simd);
     }
   }
 
@@ -323,12 +312,7 @@ namespace SEB_NAMESPACE {
       }
 
       //  rotate Q-columns
-      for (unsigned int i = 0; i < dim; ++i) {
-        const Float a = Q[pos][i];
-        const Float b = Q[pos+1][i];
-        Q[pos][i]   =  c * a + s * b;
-        Q[pos+1][i] =  c * b - s * a;
-      }
+      detail::rotate_pair(Q[pos], Q[pos+1], c, s, dim, use_simd);
     }
   }
 
@@ -338,11 +322,8 @@ namespace SEB_NAMESPACE {
   // A + u * [1,...,1] = Q' R'.
   {
     //  compute w = Q^T * u
-    for (unsigned int i = 0; i < dim; ++i) {
-      w[i] = 0;
-      for (unsigned int k = 0; k < dim; ++k)
-        w[i] += Q[i][k] * u[k];
-    }
+    for (unsigned int i = 0; i < dim; ++i)
+      w[i] = detail::dot<Float>(Q[i], u, dim, use_simd);
 
     //  rotate w down to a multiple of the first unit vector;
     //  the operations have to be recorded in R and Q
@@ -370,12 +351,7 @@ namespace SEB_NAMESPACE {
       }
 
       //  rotate two Q-columns
-      for (unsigned int i = 0; i < dim; ++i) {
-        const Float a = Q[k-1][i];
-        const Float b = Q[k][i];
-        Q[k-1][i] =  c * a + s * b;
-        Q[k][i]   =  c * b - s * a;
-      }
+      detail::rotate_pair(Q[k-1], Q[k], c, s, dim, use_simd);
     }
 
     //  add w * (1,...,1)^T to new R

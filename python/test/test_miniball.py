@@ -1,5 +1,5 @@
 import pytest
-from miniball import Miniball, incremental_miniball, miniball
+from miniball import Miniball, incremental_miniball, miniball, simd_available
 import numpy as np
 
 
@@ -122,3 +122,58 @@ def test_stateful_incremental_dimension_mismatch():
 def test_stateful_incremental_rejects_empty_initial_points():
     with pytest.raises(Exception, match="at least one point"):
         Miniball(np.empty((0, 2), dtype=np.double))
+
+
+def test_simd_availability_flag_is_boolean():
+    assert isinstance(simd_available(), bool)
+
+
+def test_simd_and_scalar_find_same_ball_for_random_high_dimensional_points():
+    rng = np.random.default_rng(42)
+    points = rng.normal(size=(300, 64))
+
+    scalar = miniball(points, use_simd_if_available=False)
+    simd = miniball(points, use_simd_if_available=True)
+
+    np.testing.assert_allclose(simd["center"], scalar["center"], rtol=1e-10)
+    assert simd["radius"] == pytest.approx(scalar["radius"], rel=1e-10)
+    assert simd["radius_squared"] == pytest.approx(
+        scalar["radius_squared"], rel=1e-10
+    )
+
+
+def test_simd_and_scalar_incremental_find_same_ball():
+    rng = np.random.default_rng(43)
+    points = rng.normal(size=(200, 32))
+    point = rng.normal(size=32) * 4
+    scalar_current = miniball(points, use_simd_if_available=False)
+    simd_current = miniball(points, use_simd_if_available=True)
+
+    scalar = incremental_miniball(
+        points, scalar_current, point, use_simd_if_available=False
+    )
+    simd = incremental_miniball(points, simd_current, point, use_simd_if_available=True)
+
+    np.testing.assert_allclose(simd["center"], scalar["center"], rtol=1e-10)
+    assert simd["radius"] == pytest.approx(scalar["radius"], rel=1e-10)
+    assert simd["radius_squared"] == pytest.approx(
+        scalar["radius_squared"], rel=1e-10
+    )
+
+
+def test_simd_and_scalar_stateful_incremental_find_same_ball():
+    rng = np.random.default_rng(44)
+    initial = rng.normal(size=(100, 24))
+    additions = rng.normal(size=(20, 24))
+    scalar = Miniball(initial, use_simd_if_available=False)
+    simd = Miniball(initial, use_simd_if_available=True)
+
+    for point in additions:
+        scalar_result = scalar.add(point)
+        simd_result = simd.add(point)
+
+    np.testing.assert_allclose(simd_result["center"], scalar_result["center"], rtol=1e-10)
+    assert simd_result["radius"] == pytest.approx(scalar_result["radius"], rel=1e-10)
+    assert simd_result["radius_squared"] == pytest.approx(
+        scalar_result["radius_squared"], rel=1e-10
+    )

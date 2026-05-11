@@ -63,6 +63,16 @@ namespace SEB_NAMESPACE {
       return c.end();
     }
 
+    const Float* data() const
+    {
+      return c.empty() ? 0 : &c[0];
+    }
+
+    Float* data()
+    {
+      return c.empty() ? 0 : &c[0];
+    }
+
   private: // member fields:
     std::vector<Float> c;       // Cartesian center coordinates
   };

@@ -31,7 +31,9 @@ nb::dict miniball_result(NativeMiniball &mb, size_t dim) {
 class Miniball {
 public:
   Miniball(
-      nb::ndarray<double, nb::shape<-1, -1>, nb::c_contig> points_arr) {
+      nb::ndarray<double, nb::shape<-1, -1>, nb::c_contig> points_arr,
+      bool use_simd_if_available = true)
+      : use_simd_if_available_(use_simd_if_available) {
     size_t n_points = points_arr.shape(0);
     dim_ = points_arr.shape(1);
     if (n_points == 0) {
@@ -44,7 +46,8 @@ public:
     for (size_t i = 0; i < n_points; ++i) {
       points_->emplace_back(dim_, data + i * dim_);
     }
-    miniball_.reset(new NativeMiniball(static_cast<unsigned int>(dim_), *points_));
+    miniball_.reset(new NativeMiniball(static_cast<unsigned int>(dim_), *points_,
+                                       use_simd_if_available_));
   }
 
   nb::dict add(nb::ndarray<double, nb::shape<-1>, nb::c_contig> point_arr) {
@@ -76,6 +79,7 @@ private:
   }
 
   size_t dim_;
+  bool use_simd_if_available_;
   std::unique_ptr<std::vector<Point>> points_;
   std::unique_ptr<NativeMiniball> miniball_;
 };
@@ -92,7 +96,8 @@ private:
  * and "radius_squared" (float).
  */
 nb::dict compute_miniball(
-    nb::ndarray<double, nb::shape<-1, -1>, nb::c_contig> points_arr) {
+    nb::ndarray<double, nb::shape<-1, -1>, nb::c_contig> points_arr,
+    bool use_simd_if_available = true) {
   size_t n_points = points_arr.shape(0);
   size_t dim = points_arr.shape(1);
 
@@ -107,7 +112,7 @@ nb::dict compute_miniball(
   }
 
   // Compute the smallest enclosing ball.
-  NativeMiniball mb(dim, points);
+  NativeMiniball mb(dim, points, use_simd_if_available);
 
   return miniball_result(mb, dim);
 }
@@ -123,7 +128,8 @@ nb::dict compute_miniball_incremental(
     nb::ndarray<double, nb::shape<-1, -1>, nb::c_contig> points_arr,
     nb::ndarray<double, nb::shape<-1>, nb::c_contig> center_arr,
     double radius_squared,
-    nb::ndarray<double, nb::shape<-1>, nb::c_contig> point_arr) {
+    nb::ndarray<double, nb::shape<-1>, nb::c_contig> point_arr,
+    bool use_simd_if_available = true) {
   size_t n_points = points_arr.shape(0);
   size_t dim = points_arr.shape(1);
 
@@ -144,7 +150,8 @@ nb::dict compute_miniball_incremental(
   points.emplace_back(dim, new_point);
 
   NativeMiniball mb(dim, points, old_center, radius_squared,
-              static_cast<unsigned int>(n_points));
+                    static_cast<unsigned int>(n_points),
+                    use_simd_if_available);
 
   return miniball_result(mb, dim);
 }
@@ -153,13 +160,18 @@ nb::dict compute_miniball_incremental(
 // This replaces all the PyMethodDef, PyModuleDef, and PyInit boilerplate.
 NB_MODULE(_miniball, m) {
   m.def("_compute_miniball", &compute_miniball, nb::arg("points"),
+        nb::arg("use_simd_if_available") = true,
         "Compute the smallest enclosing ball for a set of points.");
   m.def("_compute_miniball_incremental", &compute_miniball_incremental,
         nb::arg("points"), nb::arg("center"), nb::arg("radius_squared"),
-        nb::arg("point"),
+        nb::arg("point"), nb::arg("use_simd_if_available") = true,
         "Compute the smallest enclosing ball after appending one outside point.");
+  m.def("_simd_available", &NativeMiniball::simd_available,
+        "Return whether this build can use SIMD kernels on this CPU.");
   nb::class_<Miniball>(m, "_Miniball")
-      .def(nb::init<nb::ndarray<double, nb::shape<-1, -1>, nb::c_contig>>())
+      .def(nb::init<nb::ndarray<double, nb::shape<-1, -1>, nb::c_contig>,
+                    bool>(),
+           nb::arg("points"), nb::arg("use_simd_if_available") = true)
       .def("add", &Miniball::add)
       .def("add_points", &Miniball::add_points)
       .def("result", &Miniball::result);
