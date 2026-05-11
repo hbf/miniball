@@ -222,11 +222,10 @@ namespace SEB_NAMESPACE {
   // If such an attempt to drop fails, we are done;  because then
   // the center lies even conv(support).
   {
-    SEB_DEBUG (int iteration = 0;)
-
     while (true) {
 
-      SEB_LOG ("debug","  iteration " << ++iteration << std::endl);
+      ++last_iteration_count;
+      SEB_LOG ("debug","  iteration " << last_iteration_count << std::endl);
 
       SEB_LOG ("debug","  " << support->size()
                << " points on boundary" << std::endl);
@@ -325,6 +324,7 @@ namespace SEB_NAMESPACE {
       unsigned int new_point_index)
   {
     SEB_TIMER_START("computation");
+    last_iteration_count = 0;
 
     // optimistically, we set this flag now;
     // on return from this function it will be true:
@@ -369,6 +369,8 @@ namespace SEB_NAMESPACE {
     if (!up_to_date)
       update();
 
+    last_iteration_count = 0;
+
     SEB_ASSERT(new_point_index < S.size());
 
     if (support != NULL)
@@ -381,6 +383,8 @@ namespace SEB_NAMESPACE {
       return;
 
     while (!contains(S[new_point_index])) {
+      ++last_iteration_count;
+
       if (support->size() > dim) {
         update();
         return;

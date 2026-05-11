@@ -23,6 +23,7 @@ nb::dict miniball_result(NativeMiniball &mb, size_t dim) {
       nb::ndarray<double, nb::numpy>(mb.center_begin(), {dim}).cast();
   result["radius"] = mb.radius();
   result["radius_squared"] = mb.squared_radius();
+  result["iterations"] = mb.iterations();
 
   return result;
 }

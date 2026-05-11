@@ -35,7 +35,8 @@ namespace SEB_NAMESPACE {
     // Constructs an instance representing the miniball of points from
     // set S.  The dimension of the ambient space is fixed to d for
     // lifetime of the instance.
-    : dim(d), S(P), up_to_date(true), support(NULL)
+    : dim(d), S(P), up_to_date(true), support(NULL),
+      last_iteration_count(0)
     {
       allocate_resources();
       SEB_ASSERT(!is_empty());
@@ -49,7 +50,8 @@ namespace SEB_NAMESPACE {
     // Constructs an instance representing the miniball of points from
     // set S, using the miniball of S without new_point_index as a warm
     // start. The new point is assumed to lie outside that previous ball.
-    : dim(d), S(P), up_to_date(true), support(NULL)
+    : dim(d), S(P), up_to_date(true), support(NULL),
+      last_iteration_count(0)
     {
       allocate_resources();
       SEB_ASSERT(!is_empty());
@@ -151,6 +153,12 @@ namespace SEB_NAMESPACE {
       return dist <= radius_square;
     }
 
+    unsigned int iterations()
+    // Returns the number of iterations used by the most recent update.
+    {
+      return last_iteration_count;
+    }
+
   public: // testing:
 
     void verify();
@@ -202,6 +210,7 @@ namespace SEB_NAMESPACE {
     Float *center_to_point;
     Float *lambdas;
     Float  dist_to_aff, dist_to_aff_square;
+    unsigned int last_iteration_count;
 
 #ifdef SEB_STATS_MODE
   private: // memeber fields for statistics
