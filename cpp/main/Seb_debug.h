@@ -9,8 +9,12 @@
 #include <fstream>
 #include <map>
 #include <string>
+#ifdef _WIN32
+#include <chrono>
+#else
 #include <sys/resource.h>
 #include <sys/time.h>
+#endif
 
 namespace SEB_NAMESPACE {
 
@@ -77,7 +81,11 @@ namespace SEB_NAMESPACE {
     float lapse(const char *name);
 
   private: // private members:
+#ifdef _WIN32
+    typedef std::map<std::string,std::chrono::steady_clock::time_point> Timers;
+#else
     typedef std::map<std::string,timeval> Timers;
+#endif
     Timers timers;              // a collection of pairs (k,v) where
     // k is the timer name and v is the
     // (started) timer associated with k

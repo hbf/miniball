@@ -9,6 +9,7 @@
 #include <vector>
 #include "Seb_configure.h"
 #include "Seb_point.h"
+#include "Seb_simd.h"
 #include "Subspan.h"
 
 namespace SEB_NAMESPACE {
@@ -31,15 +32,42 @@ namespace SEB_NAMESPACE {
 
   public: // construction and destruction:
 
-    Smallest_enclosing_ball(unsigned int d, const PointAccessor &P)
+    Smallest_enclosing_ball(unsigned int d, const PointAccessor &P,
+                            bool use_simd_if_available = true)
     // Constructs an instance representing the miniball of points from
     // set S.  The dimension of the ambient space is fixed to d for
     // lifetime of the instance.
-    : dim(d), S(P), up_to_date(true), support(NULL)
+    : dim(d), S(P), up_to_date(true), support(NULL),
+      use_simd(use_simd_if_available && detail::simd_available_for<Float>()),
+      last_iteration_count(0)
     {
       allocate_resources();
       SEB_ASSERT(!is_empty());
       update();
+    }
+
+    Smallest_enclosing_ball(unsigned int d, const PointAccessor &P,
+                            const Float* previous_center,
+                            Float previous_squared_radius,
+                            unsigned int new_point_index,
+                            bool use_simd_if_available = true)
+    // Constructs an instance representing the miniball of points from
+    // set S, using the miniball of S without new_point_index as a warm
+    // start. The new point is assumed to lie outside that previous ball.
+    : dim(d), S(P), up_to_date(true), support(NULL),
+      use_simd(use_simd_if_available && detail::simd_available_for<Float>()),
+      last_iteration_count(0)
+    {
+      allocate_resources();
+      SEB_ASSERT(!is_empty());
+      update(previous_center, previous_squared_radius, new_point_index);
+      // Warm starting is an optimization; keep the constructor exact if that
+      // start does not preserve the enclosing-ball invariant.
+      for (unsigned int j = 0; j < S.size(); ++j)
+        if (!contains(S[j])) {
+          update();
+          break;
+        }
     }
 
     ~Smallest_enclosing_ball()
@@ -57,6 +85,8 @@ namespace SEB_NAMESPACE {
     {
       up_to_date = false;
     }
+
+    void append_point(unsigned int new_point_index);
 
   public: // access:
 
@@ -114,6 +144,30 @@ namespace SEB_NAMESPACE {
       return center+dim;
     }
 
+    bool contains(const Pt& point)
+    // Returns whether point is contained in the miniball.
+    // Precondition: !is_empty()
+    {
+      if (!up_to_date)
+        update();
+
+      SEB_ASSERT(!is_empty());
+      Float dist = 0;
+      dist = detail::squared_distance<Float>(point, center, dim, use_simd);
+      return dist <= radius_square;
+    }
+
+    static bool simd_available()
+    {
+      return detail::simd_available();
+    }
+
+    unsigned int iterations()
+    // Returns the number of iterations used by the most recent update.
+    {
+      return last_iteration_count;
+    }
+
   public: // testing:
 
     void verify();
@@ -137,9 +191,13 @@ namespace SEB_NAMESPACE {
   private: // internal helper routines for the actual algorithm:
     void init_ball();
     Float find_stop_fraction(int& hinderer);
+    Float find_stop_fraction(const Float* direction, int& hinderer);
     bool successful_drop();
+    void pivot();
 
-    void update();
+    void update(const Float* previous_center = NULL,
+                Float previous_squared_radius = 0,
+                unsigned int new_point_index = 0);
 
   private: // we forbid copying (since we have dynamic storage):
     Smallest_enclosing_ball(const Smallest_enclosing_ball&);
@@ -155,12 +213,14 @@ namespace SEB_NAMESPACE {
     Subspan<Float, Pt, PointAccessor> *support;          // the points that lie on the current
     // boundary and "support" the ball;
     // the essential structure for update()
+    bool use_simd;
 
   private: // member fields for temporary use:
     Float *center_to_aff;
     Float *center_to_point;
     Float *lambdas;
     Float  dist_to_aff, dist_to_aff_square;
+    unsigned int last_iteration_count;
 
 #ifdef SEB_STATS_MODE
   private: // memeber fields for statistics

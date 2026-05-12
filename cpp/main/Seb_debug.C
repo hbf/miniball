@@ -4,8 +4,12 @@
 //          Kaspar Fischer <kf@iaeth.ch>
 
 #include <cmath>
+#ifdef _WIN32
+#include <chrono>
+#else
 #include <sys/resource.h>
 #include <sys/time.h>
+#endif
 
 #include "Seb_configure.h"
 
@@ -70,6 +74,7 @@ namespace SEB_NAMESPACE {
   //         long tv_usec;       /* microseconds */
   //       };
   //
+#ifndef _WIN32
   inline timeval& operator-=(timeval &t1,const timeval &t2)
   {
     t1.tv_sec -= t2.tv_sec;
@@ -79,6 +84,7 @@ namespace SEB_NAMESPACE {
     }
     return t1;
   }
+#endif
 
   Timer::Timer()
   {
@@ -96,6 +102,9 @@ namespace SEB_NAMESPACE {
 
   void Timer::start(const char *timer_name)
   {
+#ifdef _WIN32
+    timers[std::string(timer_name)] = std::chrono::steady_clock::now();
+#else
     // fetch current usage:
     rusage now;
     int status = getrusage(RUSAGE_SELF,&now);
@@ -103,6 +112,7 @@ namespace SEB_NAMESPACE {
 
     // save it:
     timers[std::string(timer_name)] = now.ru_utime;
+#endif
   }
 
   float Timer::lapse(const char *name)
@@ -110,6 +120,11 @@ namespace SEB_NAMESPACE {
     // assert that start(name) has been called before:
     SEB_ASSERT(timers.find(std::string(name)) != timers.end());
 
+#ifdef _WIN32
+    const std::chrono::duration<float> elapsed =
+      std::chrono::steady_clock::now() - (*timers.find(std::string(name))).second;
+    return elapsed.count();
+#else
     // get current usage:
     rusage now;
     int status = getrusage(RUSAGE_SELF,&now);
@@ -118,6 +133,7 @@ namespace SEB_NAMESPACE {
     // compute elapsed usage:
     now.ru_utime -= (*timers.find(std::string(name))).second;
     return now.ru_utime.tv_sec + now.ru_utime.tv_usec * 1e-6;
+#endif
   }
 
 } // namespace SEB_NAMESPACE

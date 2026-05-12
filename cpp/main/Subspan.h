@@ -76,7 +76,8 @@ namespace SEB_NAMESPACE {
   {
   public: // construction and deletion:
 
-    Subspan(unsigned int dim, const PointAccessor& S, int i);
+    Subspan(unsigned int dim, const PointAccessor& S, int i,
+            bool use_simd_if_available = true);
     // Constructs an instance representing the affine hull aff(M) of M={p},
     // where p is the point S[i] from S.
     //
@@ -89,6 +90,8 @@ namespace SEB_NAMESPACE {
 
     void add_point(int global_index);
     void remove_point(unsigned int local_index);
+    void resize_membership();
+    void reset(unsigned int global_index);
 
   public: // access:
 
@@ -170,6 +173,7 @@ namespace SEB_NAMESPACE {
     // in row i and column j
     Float *u,*w;                       // needed for rank-1 update
     unsigned int r;                    // the rank of R (i.e. #points - 1)
+    bool use_simd;                     // use vector kernels when available
   };
 
 } // namespace SEB_NAMESPACE
