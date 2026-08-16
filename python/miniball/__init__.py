@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from ._miniball import _compute_miniball
 
 import numpy as np
